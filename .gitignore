@@ -1,3 +1,12 @@
+# Big files
+data/mpd/spotify_million_playlist_dataset/
+
+# MacOS
+.DS_Store
+
+# Test
+test.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
