@@ -1,3 +1,3 @@
 import os
 
-os.system("python3 logic/data/create_playlist_csv.py")
+os.system("python3 logic/data/extract_data-200.py")
