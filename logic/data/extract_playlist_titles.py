@@ -18,7 +18,7 @@ with open(playlists_csv_path) as csv_file:
         if is_at_header:
             is_at_header = False
         else:
-            titles[row[1]] = None
+            titles[row[1].strip()] = None
     time_elapsed = "{:.3f}".format(time.time()-start_time)
     print(f"Done in {time_elapsed}s\n")
 
