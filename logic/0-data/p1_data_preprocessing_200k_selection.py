@@ -1,7 +1,7 @@
 import os, json, csv, time
 from operator import itemgetter
 # from tqdm import tqdm
-import p2_text_preprocessing_1_title_cleaning as text_preprocess
+import p2_text_preprocessing_title_cleaning as text_preprocess
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
@@ -82,7 +82,7 @@ with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newlin
             time_remaining = (COUNT_TO_SELECT-COUNT_SELECTED)/COUNT_SELECTED * time_elapsed
             progress_string = "Selected: " + str(COUNT_SELECTED) + "/" + str(COUNT_TO_SELECT)
             progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
-            print("\r"+progress_string, end ="")
+            print("\r" + progress_string, end ="")
         # break condition
         if (COUNT_SELECTED == COUNT_TO_SELECT) : 
             print()

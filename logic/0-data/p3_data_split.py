@@ -80,7 +80,7 @@ with open(current_path + "/data/data-200/" + csv_name) as csv_file:
         time_remaining = (PLAYLIST_TOTAL-playlist_processed)/PLAYLIST_TOTAL * time_elapsed
         progress_string = "Processed: " + str(playlist_processed) + "/" + str(PLAYLIST_TOTAL)
         progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
-        print("\r"+progress_string, end ="")
+        print("\r" + progress_string, end ="")
 print()
 print("Playlist processed:", playlist_processed)
 print("Training count:", training_count)
