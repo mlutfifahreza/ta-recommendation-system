@@ -1,17 +1,18 @@
 import os, json, csv, time
 from operator import itemgetter
-from tqdm import tqdm
+# from tqdm import tqdm
+import p2_text_preprocessing_1_title_cleaning as text_preprocess
 
 # General Variables
-READING_STRING = '\033[94m' + "Reading : " + '\033[0m'
-EXPORT_STRING = '\033[92m' + "Export : " + '\033[0m'
+READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
+EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 COUNT_MPD_FILE = 1000 # number of files inside mpd data
 COUNT_MPD_FILE_DATA = 1000 # count of data inside each file
 COUNT_TO_SELECT = 200000
 COUNT_SELECTED = 0
 TIME_START = time.time()
-current_path = os.getcwd()
-mpd_path = current_path + "/data/mpd/spotify_million_playlist_dataset/data/"
+root_path = os.getcwd()
+mpd_path = root_path + "/data/mpd/spotify_million_playlist_dataset/data/"
 tracks = {}
 
 # Getting file names
@@ -21,9 +22,21 @@ for i in range(COUNT_MPD_FILE):
     end = start+(COUNT_MPD_FILE_DATA-1)
     mpd_file_names.append("mpd.slice." + str(start) + "-" + str(end) + ".json")
 
-# Generate CSV : Playlist
+# characters mapping
+characters_mapping = {}
+# Reading characters_mapping.csv dataset
+csv_name = "characters_mapping.csv"
+with open(root_path + "/data/data-200/" + csv_name) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    is_at_header = True
+    for row in csv_reader:
+        if is_at_header: is_at_header = False
+        else:
+            characters_mapping[row[0]] = row[1]
+
+# Generate CSV : playlists.csv
 csv_name = "playlists.csv"
-with open(current_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
     # starting
     print(EXPORT_STRING, csv_name)
     writer = csv.writer(f)
@@ -38,10 +51,14 @@ with open(current_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', new
         for playlist in playlists_bacth_i:
             if (COUNT_SELECTED == COUNT_TO_SELECT) : break
             # validate condition -> write
-            if (playlist["num_tracks"] >= 51 and playlist["num_tracks"] <= 100 and playlist["num_tracks"] == len(playlist["tracks"])):
+            if (
+                playlist["num_tracks"] >= 51 
+                and playlist["num_tracks"] <= 100 
+                and playlist["num_tracks"] == len(playlist["tracks"])
+            ):
                 playlist_info = []
                 playlist_info.append(playlist["pid"])
-                playlist_info.append(playlist["name"].strip())
+                playlist_info.append(text_preprocess.clean(playlist["name"], characters_mapping))
                 for track in playlist["tracks"]:
                     track_id = track["track_uri"].replace("spotify:track:","")
                     track_name = track["track_name"]
@@ -68,12 +85,12 @@ with open(current_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', new
             print("\r"+progress_string, end ="")
         # break condition
         if (COUNT_SELECTED == COUNT_TO_SELECT) : 
-            print("\n")
+            print()
             break
 
 # Writing tracks.csv popularity sorted
 csv_name = "tracks.csv"
-with open(current_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
     # starting
     print(EXPORT_STRING, csv_name)
     print("Please wait...", end="\r")
@@ -93,5 +110,5 @@ with open(current_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', new
             track["artist_name"],
             track["count"]
         ])
-    time_elapsed = "{:.3f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s\n")
+    time_elapsed = "{:.2f}".format(time.time()-start_time)
+    print(f"Done in {time_elapsed}s")

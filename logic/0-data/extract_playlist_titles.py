@@ -1,8 +1,8 @@
 import os, csv, time
 
 # General Variables
-READING_STRING = '\033[94m' + "Reading : " + '\033[0m'
-EXPORT_STRING = '\033[92m' + "Export : " + '\033[0m'
+READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
+EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 current_path = os.getcwd()
 titles = {}
 
@@ -20,8 +20,8 @@ with open(current_path + "/data/data-200/" + csv_name) as csv_file:
             is_at_header = False
         else:
             titles[row[1]] = None
-    time_elapsed = "{:.3f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s\n")
+    time_elapsed = "{:.2f}".format(time.time()-start_time)
+    print(f"Done in {time_elapsed}s")
 
 # Writing to titles.csv
 csv_name = "titles.csv"
@@ -40,5 +40,5 @@ with open(current_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', new
     print("Please wait...", end="\r")
     for title in sorted_titles:
         writer.writerow([title])
-    time_elapsed = "{:.3f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s\n")
+    time_elapsed = "{:.2f}".format(time.time()-start_time)
+    print(f"Done in {time_elapsed}s")
