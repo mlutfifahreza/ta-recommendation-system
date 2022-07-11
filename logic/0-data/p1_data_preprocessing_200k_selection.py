@@ -8,9 +8,12 @@ READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 COUNT_MPD_FILE = 1000 # number of files inside mpd data
 COUNT_MPD_FILE_DATA = 1000 # count of data inside each file
-COUNT_TO_SELECT = 200000
+COUNT_TO_SELECT = 4000
+
+# For progress checking
 COUNT_SELECTED = 0
 TIME_START = time.time()
+
 root_path = os.getcwd()
 mpd_path = root_path + "/data/mpd/spotify_million_playlist_dataset/data/"
 tracks = {}

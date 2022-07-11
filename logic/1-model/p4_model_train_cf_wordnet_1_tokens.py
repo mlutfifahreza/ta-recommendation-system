@@ -1,11 +1,11 @@
-from lib2to3.pgen2 import token
 import os, csv, time
+from nltk.corpus import wordnet
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 current_path = os.getcwd()
-tokens = {}
+token_tracks = {}
 
 # Reading playlists.csv dataset
 csv_name = "playlists.csv"
@@ -13,7 +13,7 @@ with open(current_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
-    total_count = 160000
+    total_count = int(4000 * 0.8)
     processed_count = 0
     TIME_START = time.time()
     # read and process
@@ -25,11 +25,9 @@ with open(current_path + "/data/data-training/" + csv_name) as csv_file:
             title = row[1]
             track_ids = row[2:]
             for token in title.split():
-                if token in tokens.keys():
-                    # add track_ids without duplicate
-                    tokens[token] = list(set(tokens[token] + track_ids))
-                else:
-                    tokens[token] = track_ids
+                # add track_ids without duplicate
+                if token in token_tracks.keys(): token_tracks[token] = list(set(token_tracks[token] + track_ids))
+                else: token_tracks[token] = track_ids
         # progress stats
         processed_count += 1
         time_elapsed = time.time()-TIME_START
@@ -39,8 +37,8 @@ with open(current_path + "/data/data-training/" + csv_name) as csv_file:
         print("\r" + progress_string, end ="")
     print()
 
-# Writing to tokens.csv
-csv_name = "tokens.csv"
+# Writing to token_tracks.csv
+csv_name = "token_tracks.csv"
 with open(current_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
     # starting
     print(EXPORT_STRING, csv_name)
@@ -51,14 +49,7 @@ with open(current_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8'
     header = ["token","track_ids"]
     writer.writerow(header)
     # write content
-    for key, value in tokens.items():
+    for key, value in token_tracks.items():
         writer.writerow([key] + value)
     time_elapsed = "{:.2f}".format(time.time()-start_time)
     print(f"Done in {time_elapsed}s")
-
-# Generating token-20tokens
-# todo
-# tokens = list(tokens.keys())
-# for token in tokens:
-#     for token in tokens:
-        
