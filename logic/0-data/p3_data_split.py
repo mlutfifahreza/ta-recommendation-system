@@ -7,7 +7,7 @@ from numpy import mat
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 TIME_START = time.time()
-current_path = os.getcwd()
+root_path = os.getcwd()
 
 PLAYLIST_TOTAL = 200000
 if len(sys.argv) > 1 :
@@ -25,9 +25,9 @@ validation_count = 0
 testing_count = 0
 
 writing_paths = {
-    "training" : current_path + "/data/data-training/playlists.csv",
-    "validation" : current_path + "/data/data-validation/playlists.csv",
-    "testing" : current_path + "/data/data-testing/playlists.csv",
+    "training" : root_path + "/data/data-training/playlists.csv",
+    "validation" : root_path + "/data/data-validation/playlists.csv",
+    "testing" : root_path + "/data/data-testing/playlists.csv",
 }
 
 def write_split_data(type, playlist):
@@ -46,7 +46,7 @@ def write_split_data(type, playlist):
 
 # Reading playlists.csv dataset
 csv_name = "playlists.csv"
-with open(current_path + "/data/data-200/" + csv_name) as csv_file:
+with open(root_path + "/data/data-200/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     start_time = time.time()
@@ -84,7 +84,42 @@ with open(current_path + "/data/data-200/" + csv_name) as csv_file:
         progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
         print("\r" + progress_string, end ="")
 print()
-print("Playlist processed:", playlist_processed)
-print("Training count:", training_count)
-print("Validation count:", validation_count)
-print("Testing count:", testing_count)
+print("* Playlist processed:", playlist_processed)
+print("* Training:", training_count)
+print("* Validation:", validation_count)
+print("* Testing:", testing_count)
+
+# Move to p5
+# # Extract tracks of training data playlists
+# training_tracks = set()
+# csv_name = "playlists.csv"
+# with open(root_path + "/data/data-training/" + csv_name) as csv_file:
+#     # starting
+#     print(READING_STRING, csv_name)
+#     start_time = time.time()
+#     csv_reader = csv.reader(csv_file, delimiter=',')
+#     is_at_header = True
+#     for row in csv_reader:
+#         if is_at_header:
+#             is_at_header = False
+#         else:
+#             for track in row[2:]:
+#                 training_tracks.add(track)
+
+# # Writing tracks.csv popularity sorted
+# csv_name = "tracks.csv"
+# with open(root_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+#     # starting
+#     print(EXPORT_STRING, csv_name)
+#     print("Please wait...", end="\r")
+#     start_time = time.time()
+#     writer = csv.writer(f)
+#     # write header
+#     header = ["track_id"]
+#     writer.writerow(header)
+#     # write content
+#     for id in training_tracks:
+#         writer.writerow(id)
+#     # end
+#     time_elapsed = "{:.2f}".format(time.time()-start_time)
+#     print(f"Done in {time_elapsed}s")

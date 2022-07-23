@@ -4,7 +4,7 @@ from nltk.corpus import wordnet
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
-current_path = os.getcwd()
+root_path = os.getcwd()
 token_tracks = {}
 PLAYLIST_TOTAL = 200000
 if len(sys.argv) > 1 :
@@ -12,7 +12,7 @@ if len(sys.argv) > 1 :
 
 # Reading playlists.csv dataset
 csv_name = "playlists.csv"
-with open(current_path + "/data/data-training/" + csv_name) as csv_file:
+with open(root_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
@@ -42,7 +42,7 @@ with open(current_path + "/data/data-training/" + csv_name) as csv_file:
 
 # Writing to token_tracks.csv
 csv_name = "token_tracks.csv"
-with open(current_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+with open(root_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
     # starting
     print(EXPORT_STRING, csv_name)
     print("Please wait...", end="\r")

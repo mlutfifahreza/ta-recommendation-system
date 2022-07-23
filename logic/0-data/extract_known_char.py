@@ -3,12 +3,12 @@ import os, csv, time, re
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
-current_path = os.getcwd()
+root_path = os.getcwd()
 chars = {}
 
 # Reading titles.csv dataset
 csv_name = "titles.csv"
-with open(current_path + "/data/data-200/" + csv_name) as csv_file:
+with open(root_path + "/data/data-200/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
@@ -27,7 +27,7 @@ with open(current_path + "/data/data-200/" + csv_name) as csv_file:
 
 # Writing to known_characters.csv
 csv_name = "known_characters.csv"
-with open(current_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
     # starting
     print(EXPORT_STRING, csv_name)
     print("Please wait...", end="\r")

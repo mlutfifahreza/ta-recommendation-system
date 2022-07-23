@@ -1,6 +1,5 @@
 import os, json, csv, time, sys
 from operator import itemgetter
-# from tqdm import tqdm
 import p2_text_preprocessing_title_cleaning as text_preprocess
 
 # General Variables
@@ -93,27 +92,28 @@ with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newlin
             print()
             break
 
-# Writing tracks.csv popularity sorted
-csv_name = "tracks.csv"
-with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
-    # starting
-    print(EXPORT_STRING, csv_name)
-    print("Please wait...", end="\r")
-    start_time = time.time()
-    writer = csv.writer(f)
-    # write header
-    header = ["track_id","track_name","artist_id","artist_name","count"]
-    writer.writerow(header)
-    # write content
-    tracks_sorted = sorted(tracks.values(), key=itemgetter("count"), reverse=True) # returns list
-    total = len(tracks_sorted)
-    for track in tracks_sorted:
-        writer.writerow([
-            track["track_id"],
-            track["track_name"],
-            track["artist_id"],
-            track["artist_name"],
-            track["count"]
-        ])
-    time_elapsed = "{:.2f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s")
+# Move to p5
+# # Writing tracks.csv popularity sorted
+# csv_name = "tracks.csv"
+# with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+#     # starting
+#     print(EXPORT_STRING, csv_name)
+#     print("Please wait...", end="\r")
+#     start_time = time.time()
+#     writer = csv.writer(f)
+#     # write header
+#     header = ["track_id","track_name","artist_id","artist_name","count"]
+#     writer.writerow(header)
+#     # write content
+#     tracks_sorted = sorted(tracks.values(), key=itemgetter("count"), reverse=True) # returns list of sorted track detail
+#     for track in tracks_sorted:
+#         writer.writerow([
+#             track["track_id"],
+#             track["track_name"],
+#             track["artist_id"],
+#             track["artist_name"],
+#             track["count"]
+#         ])
+#     # end
+#     time_elapsed = "{:.2f}".format(time.time()-start_time)
+#     print(f"Done in {time_elapsed}s")

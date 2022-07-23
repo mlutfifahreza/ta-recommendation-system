@@ -4,7 +4,7 @@ from nltk.corpus import wordnet
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
-current_path = os.getcwd()
+root_path = os.getcwd()
 PLAYLIST_TOTAL = 200000
 if len(sys.argv) > 1 :
     PLAYLIST_TOTAL = int(sys.argv[1])
@@ -12,7 +12,7 @@ if len(sys.argv) > 1 :
 # Reading tracks.csv dataset
 track_count = {}
 csv_name = "tracks.csv"
-with open(current_path + "/data/data-200/" + csv_name) as csv_file:
+with open(root_path + "/data/data-200/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
@@ -30,7 +30,7 @@ with open(current_path + "/data/data-200/" + csv_name) as csv_file:
 # Reading token_tracks.csv dataset
 token_tracks = {} # key = token, value = list of [track id, count]
 csv_name = "token_tracks.csv"
-with open(current_path + "/data/data-training/" + csv_name) as csv_file:
+with open(root_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
@@ -64,7 +64,7 @@ with open(current_path + "/data/data-training/" + csv_name) as csv_file:
 
 # Writing to token-50tracks.csv
 csv_name = "token-50tracks.csv"
-with open(current_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+with open(root_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
     # starting
     TIME_START = time.time()
     print(EXPORT_STRING, csv_name)

@@ -1,7 +1,7 @@
 import os
 
 RUNNING_STRING = '\033[33m' + "Running :" + '\033[0m'
-TOTAL_PLAYLIST = 200000
+TOTAL_PLAYLIST = 10000
 
 files = [
     # PROCESS : DATA
@@ -17,7 +17,7 @@ files = [
     "logic/1-model/p5_model_train_cf_popularity.py",
 
     # PROCESS : TRAINING Model CBF Word2Vec Continuous Bag of Word (CBOW)
-    "logic/1-model/p6_model_train_cbf_cbow.py",
+    # "logic/1-model/p6_model_train_cbf_cbow.py",
 
     # EXTRA
     # "logic/0-data/extract_playlist_titles.py",
