@@ -19,10 +19,7 @@ TRAINING_TOTAL = PLAYLIST_TOTAL * TRAINING_RATIO
 VALIDATION_TOTAL = PLAYLIST_TOTAL * VALIDATION_RATIO
 TESTING_TOTAL = PLAYLIST_TOTAL * TESTING_RATIO
 
-playlist_processed = 0
-training_count = 0
-validation_count = 0
-testing_count = 0
+playlist_processed = training_count = validation_count = testing_count = 0
 
 writing_paths = {
     "training" : root_path + "/data/data-training/playlists.csv",
@@ -83,43 +80,10 @@ with open(root_path + "/data/data-200/" + csv_name) as csv_file:
         progress_string = "Processed: " + str(playlist_processed) + "/" + str(PLAYLIST_TOTAL)
         progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
         print("\r" + progress_string, end ="")
+
+# Ending
 print()
 print("* Playlist processed:", playlist_processed)
 print("* Training:", training_count)
 print("* Validation:", validation_count)
 print("* Testing:", testing_count)
-
-# Move to p5
-# # Extract tracks of training data playlists
-# training_tracks = set()
-# csv_name = "playlists.csv"
-# with open(root_path + "/data/data-training/" + csv_name) as csv_file:
-#     # starting
-#     print(READING_STRING, csv_name)
-#     start_time = time.time()
-#     csv_reader = csv.reader(csv_file, delimiter=',')
-#     is_at_header = True
-#     for row in csv_reader:
-#         if is_at_header:
-#             is_at_header = False
-#         else:
-#             for track in row[2:]:
-#                 training_tracks.add(track)
-
-# # Writing tracks.csv popularity sorted
-# csv_name = "tracks.csv"
-# with open(root_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
-#     # starting
-#     print(EXPORT_STRING, csv_name)
-#     print("Please wait...", end="\r")
-#     start_time = time.time()
-#     writer = csv.writer(f)
-#     # write header
-#     header = ["track_id"]
-#     writer.writerow(header)
-#     # write content
-#     for id in training_tracks:
-#         writer.writerow(id)
-#     # end
-#     time_elapsed = "{:.2f}".format(time.time()-start_time)
-#     print(f"Done in {time_elapsed}s")

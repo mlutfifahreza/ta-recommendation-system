@@ -1,7 +1,7 @@
 import os
 
 RUNNING_STRING = '\033[33m' + "Running :" + '\033[0m'
-TOTAL_PLAYLIST = 10000
+TOTAL_PLAYLIST = 50000
 
 files = [
     # PROCESS : DATA

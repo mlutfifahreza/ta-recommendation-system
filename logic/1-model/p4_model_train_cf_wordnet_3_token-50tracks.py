@@ -9,10 +9,10 @@ PLAYLIST_TOTAL = 200000
 if len(sys.argv) > 1 :
     PLAYLIST_TOTAL = int(sys.argv[1])
 
-# Reading tracks.csv dataset
+# Reading track_count.csv dataset
 track_count = {}
-csv_name = "tracks.csv"
-with open(root_path + "/data/data-200/" + csv_name) as csv_file:
+csv_name = "track_count.csv"
+with open(root_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
@@ -22,7 +22,7 @@ with open(root_path + "/data/data-200/" + csv_name) as csv_file:
     is_at_header = True
     for row in csv_reader:
         if is_at_header: is_at_header = False
-        else: track_count[row[0]] = int(row[4]) # row 0 = track_id -> key, row 4 = count -> value
+        else: track_count[row[0]] = int(row[1]) # row 0 = track_id -> key, row 4 = count -> value
     # finished
     time_elapsed = "{:.2f}".format(time.time()-start_time)
     print(f"Done in {time_elapsed}s")

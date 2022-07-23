@@ -7,9 +7,7 @@ READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 COUNT_MPD_FILE = 1000 # number of files inside mpd data
 COUNT_MPD_FILE_DATA = 1000 # count of data inside each file
-COUNT_TO_SELECT = 200000
-if len(sys.argv) > 1 :
-    COUNT_TO_SELECT = int(sys.argv[1])
+COUNT_TO_SELECT = int(sys.argv[1]) if len(sys.argv) > 1 else 200000
 
 # For progress checking
 COUNT_SELECTED = 0
@@ -17,7 +15,6 @@ TIME_START = time.time()
 
 root_path = os.getcwd()
 mpd_path = root_path + "/data/mpd/spotify_million_playlist_dataset/data/"
-tracks = {}
 
 # Getting file names
 mpd_file_names = []
@@ -35,10 +32,10 @@ with open(root_path + "/data/data-200/" + csv_name) as csv_file:
     is_at_header = True
     for row in csv_reader:
         if is_at_header: is_at_header = False
-        else:
-            characters_mapping[row[0]] = row[1]
+        else: characters_mapping[row[0]] = row[1]
 
 # Generate CSV : playlists.csv
+tracks = {}
 csv_name = "playlists.csv"
 with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
     # starting
@@ -60,26 +57,27 @@ with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newlin
                 and playlist["num_tracks"] <= 100 
                 and playlist["num_tracks"] == len(playlist["tracks"])
             ):
-                playlist_info = []
-                playlist_info.append(playlist["pid"])
-                playlist_info.append(text_preprocess.clean(playlist["name"], characters_mapping))
+                playlist_detail = []
+                playlist_detail.append(playlist["pid"])
+                playlist_detail.append(text_preprocess.clean(playlist["name"], characters_mapping))
                 for track in playlist["tracks"]:
                     track_id = track["track_uri"].replace("spotify:track:","")
                     track_name = track["track_name"]
                     artist_id = track["artist_uri"].replace("spotify:artist:","")
                     artist_name = track["artist_name"]
-                    playlist_info.append(track_id)
+                    playlist_detail.append(track_id)
                     if track_id in tracks:
-                        tracks[track_id]["count"] += 1
+                        # tracks[track_id]["count"] += 1
+                        continue
                     else :
                         tracks[track_id] = {
                             "track_id" : track_id,
                             "track_name" : track_name,
                             "artist_id" : artist_id,
                             "artist_name" : artist_name,
-                            "count" : 1
+                            # "count" : 1
                         }
-                writer.writerow(playlist_info)
+                writer.writerow(playlist_detail)
                 COUNT_SELECTED += 1
             # progress stats
             time_elapsed = time.time()-TIME_START
@@ -92,28 +90,27 @@ with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newlin
             print()
             break
 
-# Move to p5
-# # Writing tracks.csv popularity sorted
-# csv_name = "tracks.csv"
-# with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
-#     # starting
-#     print(EXPORT_STRING, csv_name)
-#     print("Please wait...", end="\r")
-#     start_time = time.time()
-#     writer = csv.writer(f)
-#     # write header
-#     header = ["track_id","track_name","artist_id","artist_name","count"]
-#     writer.writerow(header)
-#     # write content
-#     tracks_sorted = sorted(tracks.values(), key=itemgetter("count"), reverse=True) # returns list of sorted track detail
-#     for track in tracks_sorted:
-#         writer.writerow([
-#             track["track_id"],
-#             track["track_name"],
-#             track["artist_id"],
-#             track["artist_name"],
-#             track["count"]
-#         ])
-#     # end
-#     time_elapsed = "{:.2f}".format(time.time()-start_time)
-#     print(f"Done in {time_elapsed}s")
+# Writing tracks.csv sort by id
+csv_name = "tracks.csv"
+with open(root_path + "/data/data-200/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+    # starting
+    print(EXPORT_STRING, csv_name)
+    print("Please wait...", end="\r")
+    start_time = time.time()
+    writer = csv.writer(f)
+    # write header
+    header = ["track_id","track_name","artist_id","artist_name","count"]
+    writer.writerow(header)
+    # write content
+    tracks_sorted = sorted(tracks.values(), key=itemgetter("track_id")) # returns list of sorted track detail
+    for track in tracks_sorted:
+        writer.writerow([
+            track["track_id"],
+            track["track_name"],
+            track["artist_id"],
+            track["artist_name"],
+            # track["count"]
+        ])
+    # ending
+    time_elapsed = "{:.2f}".format(time.time()-start_time)
+    print(f"Done in {time_elapsed}s")
