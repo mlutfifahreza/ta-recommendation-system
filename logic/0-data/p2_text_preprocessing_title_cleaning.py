@@ -14,9 +14,8 @@ def clean(raw_title, characters_mapping):
     # normalization 1 : convert emojis
     emojis = demoji.findall(processed_title)
     for key, value in emojis.items():
-        mapping = re.sub(r'([^\w\s])', '', value)
         mapping = re.sub(r'((\w+)\s+skin tone)|(face)|(flag)|(hand)', ' ', mapping)
-        processed_title = processed_title.replace(key, mapping)
+        processed_title = processed_title.replace(key, ' '+mapping+' ')
     
     # normalization 1 : convert special characters
     for key,value in characters_mapping.items():
