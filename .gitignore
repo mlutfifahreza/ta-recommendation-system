@@ -138,3 +138,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+logic/1-model/test2.py

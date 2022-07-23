@@ -1,4 +1,4 @@
-import os, json, csv, time
+import os, json, csv, time, sys
 from operator import itemgetter
 # from tqdm import tqdm
 import p2_text_preprocessing_title_cleaning as text_preprocess
@@ -8,7 +8,9 @@ READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 COUNT_MPD_FILE = 1000 # number of files inside mpd data
 COUNT_MPD_FILE_DATA = 1000 # count of data inside each file
-COUNT_TO_SELECT = 4000
+COUNT_TO_SELECT = 200000
+if len(sys.argv) > 1 :
+    COUNT_TO_SELECT = int(sys.argv[1])
 
 # For progress checking
 COUNT_SELECTED = 0

@@ -1,10 +1,13 @@
-import os, csv, time
+import os, csv, time, sys
 from nltk.corpus import wordnet
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 current_path = os.getcwd()
+PLAYLIST_TOTAL = 200000
+if len(sys.argv) > 1 :
+    PLAYLIST_TOTAL = int(sys.argv[1])
 
 # Reading tracks.csv dataset
 track_count = {}
@@ -23,7 +26,6 @@ with open(current_path + "/data/data-200/" + csv_name) as csv_file:
     # finished
     time_elapsed = "{:.2f}".format(time.time()-start_time)
     print(f"Done in {time_elapsed}s")
-    print()
 
 # Reading token_tracks.csv dataset
 token_tracks = {} # key = token, value = list of [track id, count]
@@ -32,7 +34,7 @@ with open(current_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
-    total_count = int(4000 * 0.8)
+    total_count = int(PLAYLIST_TOTAL * 0.8)
     processed_count = 0
     TIME_START = time.time()
     # read and process

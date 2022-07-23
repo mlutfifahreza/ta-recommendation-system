@@ -1,4 +1,4 @@
-import os, csv, time
+import os, csv, time, sys
 import random
 
 from numpy import mat
@@ -9,7 +9,9 @@ EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 TIME_START = time.time()
 current_path = os.getcwd()
 
-PLAYLIST_TOTAL = 4000
+PLAYLIST_TOTAL = 200000
+if len(sys.argv) > 1 :
+    PLAYLIST_TOTAL = int(sys.argv[1])
 TRAINING_RATIO = 0.8
 VALIDATION_RATIO = 0.1
 TESTING_RATIO = 0.1
