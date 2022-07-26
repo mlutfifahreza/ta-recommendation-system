@@ -2,9 +2,8 @@ import os, csv, time, sys, math
 from nltk.corpus import wordnet
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from math import exp
-import matplotlib.pyplot as plt
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
@@ -15,12 +14,15 @@ def sigmoid(x):
     return 1.0 / (1.0 + exp(-x))
 
 def activate(inputs, weights):
-	return sigmoid(np.dot(inputs, weights))
+    result = []
+    for w in weights:
+        result.append(sigmoid(np.dot(inputs, w)))
+    return np.array(result)
 
 def error(outputs, targets):
     np.square(np.subtract(targets, outputs)).mean()
 
-def train(embed_size = 6):
+def train(size_embed = 6):
     # Getting labels -> convert to one hot encoding
     label_encoding = {}
     # read track_count.csv dataset
@@ -79,25 +81,36 @@ def train(embed_size = 6):
 
     # Set Up Variables
     learning_rate = 0.1
-    iterations = 100
-    input_size = track_count + 1 # +1 for bias
-    output_size = track_count
-    hidden_size = embed_size
+    iterations = 1
+    size_input = len(inputs[0])
+    size_output = len(targets[0])
+    size_hidden = size_embed # default = 6
     # initialize layers
-    L1 = np.zeros(input_size, dtype='f')
-    L2 = np.zeros(hidden_size, dtype='f')
-    L3 = np.zeros(output_size, dtype='f')
+    L1 = np.zeros(size_input, dtype='f')
+    L2 = np.zeros(size_hidden, dtype='f')
+    L3 = np.zeros(size_output, dtype='f')
     # initialize weights
-    W1 = np.full((hidden_size, input_size), 0.5, dtype='f')
-    W2 = np.full((output_size, hidden_size), 0.5, dtype='f')
+    W1 = np.full((size_hidden, size_input), 0.5, dtype='f')
+    W2 = np.full((size_output, size_hidden), 0.5, dtype='f')
     # learning logs
     logs = { "error" : [], "accuracy" : [],}
 
     # Start Learning
-    for i in range(iterations):
-        continue
-    plt.plot(logs["error"])
-    plt.show()
+    size_data = len(inputs)
+    for itr in range(iterations):
+        for d in range(size_data):
+            # fast forward 1 : input -> hidden
+            L1 = inputs[d]
+            L2 = activate(L1, W1)
+            # fast forward 2 : hidden -> output
+            L3 = activate(L2, W2)
+            # check error
+            logs["error"].append(error(L3, targets[d]))
+            # back propagation 1 : update weight(output -> hidden)
+            # back propagation 2 : update weight(hidden -> input)
+    # plt.plot(logs["error"])
+    # plt.show()
+    print(logs["error"])
 
 
 train()
