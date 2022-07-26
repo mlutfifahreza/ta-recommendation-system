@@ -50,6 +50,6 @@ with open(current_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8'
     # write content
     for item in track_count_list:
         writer.writerow(item)
-    # finished
+    # finishing
     time_elapsed = "{:.2f}".format(time.time()-start_time)
     print(f"Done in {time_elapsed}s")

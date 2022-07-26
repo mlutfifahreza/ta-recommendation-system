@@ -7,7 +7,7 @@ data/mpd/spotify_million_playlist_dataset/
 .DS_Store
 
 # Test
-test.py
+test*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
