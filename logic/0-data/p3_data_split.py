@@ -1,29 +1,22 @@
 import os, csv, time, sys
 import random
 
-from numpy import mat
-
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 TIME_START = time.time()
 root_path = os.getcwd()
 
-PLAYLIST_TOTAL = 200000
-if len(sys.argv) > 1 :
-    PLAYLIST_TOTAL = int(sys.argv[1])
-TRAINING_RATIO = 0.8
-VALIDATION_RATIO = 0.1
+PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
+TRAINING_RATIO = 0.9
 TESTING_RATIO = 0.1
 TRAINING_TOTAL = PLAYLIST_TOTAL * TRAINING_RATIO
-VALIDATION_TOTAL = PLAYLIST_TOTAL * VALIDATION_RATIO
 TESTING_TOTAL = PLAYLIST_TOTAL * TESTING_RATIO
 
-playlist_processed = training_count = validation_count = testing_count = 0
+playlist_processed = training_count = testing_count = 0
 
 writing_paths = {
     "training" : root_path + "/data/data-training/playlists.csv",
-    "validation" : root_path + "/data/data-validation/playlists.csv",
     "testing" : root_path + "/data/data-testing/playlists.csv",
 }
 
@@ -34,9 +27,6 @@ def write_split_data(type, playlist):
     if (type == "training"):
         global training_count
         training_count += 1
-    elif (type == "validation"):
-        global validation_count
-        validation_count += 1
     else:
         global testing_count
         testing_count += 1
@@ -59,20 +49,9 @@ with open(root_path + "/data/data-200/" + csv_name) as csv_file:
             is_at_header = False
         else:
             x = random.random()
-            # Training Data
-            if (x <= TRAINING_RATIO and training_count < TRAINING_TOTAL):
-                write_split_data("training", row)
-            # Validation Data
-            elif (x <= TRAINING_RATIO + VALIDATION_RATIO and validation_count < VALIDATION_TOTAL):
-                write_split_data("validation", row)
-            # Testing Data
-            elif (testing_count < TESTING_TOTAL):
-                write_split_data("testing", row)
-            # cycle through training -> validation
-            elif (training_count < TRAINING_TOTAL):
-                write_split_data("training", row)
-            else:
-                write_split_data("validation", row)
+            if (x <= TRAINING_RATIO and training_count < TRAINING_TOTAL): write_split_data("training", row)
+            elif (testing_count < TESTING_TOTAL): write_split_data("testing", row)
+            else: write_split_data("training", row)
             playlist_processed += 1
         # progress stats
         time_elapsed = time.time()-TIME_START
@@ -83,7 +62,6 @@ with open(root_path + "/data/data-200/" + csv_name) as csv_file:
 
 # Ending
 print()
-print("* Playlist processed:", playlist_processed)
-print("* Training:", training_count)
-print("* Validation:", validation_count)
-print("* Testing:", testing_count)
+print("* Playlist processed :", playlist_processed)
+print("* Training           :", training_count)
+print("* Testing            :", testing_count)

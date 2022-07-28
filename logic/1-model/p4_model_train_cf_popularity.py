@@ -1,5 +1,4 @@
 import os, csv, time
-from collections import OrderedDict
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'

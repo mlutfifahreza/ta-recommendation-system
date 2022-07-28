@@ -1,13 +1,10 @@
 import os, csv, time, sys
-from nltk.corpus import wordnet
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 root_path = os.getcwd()
-PLAYLIST_TOTAL = 200000
-if len(sys.argv) > 1 :
-    PLAYLIST_TOTAL = int(sys.argv[1])
+PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
 
 # Reading track_count.csv dataset
 track_count = {}

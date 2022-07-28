@@ -7,9 +7,7 @@ EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 PROCESS_STRING = '\033[35m' + "Process :" + '\033[0m'
 root_path = os.getcwd()
 tokens = [] 
-PLAYLIST_TOTAL = 200000
-if len(sys.argv) > 1 :
-    PLAYLIST_TOTAL = int(sys.argv[1])
+PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
 
 # Reading token_tracks.csv dataset
 csv_name = "token_tracks.csv"

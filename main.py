@@ -1,7 +1,7 @@
 import os
 
 RUNNING_STRING = '\033[33m' + "Running :" + '\033[0m'
-TOTAL_PLAYLIST = 1
+TOTAL_PLAYLIST = 1000
 
 files = [
     # PROCESS : DATA
@@ -9,13 +9,12 @@ files = [
     "logic/0-data/p3_data_split.py "+ str(TOTAL_PLAYLIST),
 
     # PROCESS : TRAINING Model CF Popularity
-    "logic/1-model/p5_model_train_cf_popularity.py",
+    "logic/1-model/p4_model_train_cf_popularity.py",
     
     # PROCESS : TRAINING Model CF Wordnet
-    "logic/1-model/p4_model_train_cf_wordnet_1_tokens.py "+ str(TOTAL_PLAYLIST),
-    "logic/1-model/p4_model_train_cf_wordnet_2_token-20tokens.py "+ str(TOTAL_PLAYLIST),
-    "logic/1-model/p4_model_train_cf_wordnet_3_token-50tracks.py "+ str(TOTAL_PLAYLIST),
-
+    "logic/1-model/p5_model_train_cf_wordnet_1_tokens.py "+ str(TOTAL_PLAYLIST),
+    "logic/1-model/p5_model_train_cf_wordnet_2_token-20tokens.py "+ str(TOTAL_PLAYLIST),
+    "logic/1-model/p5_model_train_cf_wordnet_3_token-50tracks.py "+ str(TOTAL_PLAYLIST),
 
     # PROCESS : TRAINING Model CBF Word2Vec Continuous Bag of Word (CBOW)
     "logic/1-model/p6_model_train_cbf_cbow.py",

@@ -10,3 +10,15 @@
     #         encoding[i] = (encoding[i] + 1) % 2
     #         i -= 1
     #     label_encoding[key] = encoding.copy()
+
+def sigmoid(x):
+    return 1.0 / (1.0 + exp(-x))
+
+def activate(inputs, weights):
+    result = []
+    for w in weights:
+        result.append(sigmoid(np.dot(inputs, w)))
+    return np.array(result)
+
+def error(outputs, targets):
+    return np.square(np.subtract(targets, outputs)).mean()

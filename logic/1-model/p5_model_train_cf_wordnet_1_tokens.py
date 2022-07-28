@@ -1,14 +1,11 @@
 import os, csv, time, sys
-from nltk.corpus import wordnet
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
 EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 root_path = os.getcwd()
 token_tracks = {}
-PLAYLIST_TOTAL = 200000
-if len(sys.argv) > 1 :
-    PLAYLIST_TOTAL = int(sys.argv[1])
+PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
 
 # Reading playlists.csv dataset
 csv_name = "playlists.csv"
@@ -25,11 +22,11 @@ with open(root_path + "/data/data-training/" + csv_name) as csv_file:
     for row in csv_reader:
         if is_at_header: is_at_header = False
         else:
-            title = row[1]
-            track_ids = row[2:]
+            title, track_ids = row[1], row[2:]
             for token in title.split():
                 # add track_ids without duplicate
-                if token in token_tracks.keys(): token_tracks[token] = list(set(token_tracks[token] + track_ids))
+                if token in token_tracks.keys(): 
+                    token_tracks[token] = list(set(token_tracks[token] + track_ids))
                 else: token_tracks[token] = track_ids
         # progress stats
         processed_count += 1
