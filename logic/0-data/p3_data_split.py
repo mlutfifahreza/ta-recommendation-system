@@ -7,61 +7,56 @@ EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
 TIME_START = time.time()
 root_path = os.getcwd()
 
-PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
-TRAINING_RATIO = 0.9
-TESTING_RATIO = 0.1
-TRAINING_TOTAL = PLAYLIST_TOTAL * TRAINING_RATIO
-TESTING_TOTAL = PLAYLIST_TOTAL * TESTING_RATIO
+n_total = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
+n_processed = n_train = n_test = 0
+r_train = 0.9
+r_test = 0.1
+n_total_train = n_total * r_train
+n_total_test = n_total * r_test
 
-playlist_processed = training_count = testing_count = 0
+path_train =  root_path + "/data/data-training/playlists.csv"
+path_test = root_path + "/data/data-testing/playlists.csv"
 
-writing_paths = {
-    "training" : root_path + "/data/data-training/playlists.csv",
-    "testing" : root_path + "/data/data-testing/playlists.csv",
-}
-
-def write_split_data(type, playlist):
-    with open(writing_paths[type], 'a+', encoding='UTF8', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(playlist)
-    if (type == "training"):
-        global training_count
-        training_count += 1
-    else:
-        global testing_count
-        testing_count += 1
+def write_split_data(path, playlist):
+    with open(path, 'a+', encoding = 'UTF8', newline = '') as f:
+        csv.writer(f).writerow(playlist)
 
 # Reading playlists.csv dataset
-csv_name = "playlists.csv"
-with open(root_path + "/data/data-200/" + csv_name) as csv_file:
+path = root_path + "/data/data-all/" + "playlists.csv"
+with open(path) as csv_file:
     # starting
-    print(READING_STRING, csv_name)
-    start_time = time.time()
+    print(READING_STRING, path)
+    t_start = time.time()
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
     for row in csv_reader:
         # write header for each file
         if is_at_header:
-            for path in writing_paths.values():
-                with open(path, 'w', encoding='UTF8', newline='') as f:
-                    writer = csv.writer(f)
-                    writer.writerow(row)
+            for path_w in [path_train, path_test]:
+                with open(path_w, 'w', encoding = 'UTF8', newline = '') as f:
+                    csv.writer(f).writerow(row)
             is_at_header = False
         else:
             x = random.random()
-            if (x <= TRAINING_RATIO and training_count < TRAINING_TOTAL): write_split_data("training", row)
-            elif (testing_count < TESTING_TOTAL): write_split_data("testing", row)
-            else: write_split_data("training", row)
-            playlist_processed += 1
-        # progress stats
-        time_elapsed = time.time()-TIME_START
-        time_remaining = (PLAYLIST_TOTAL-playlist_processed)/PLAYLIST_TOTAL * time_elapsed
-        progress_string = "Processed: " + str(playlist_processed) + "/" + str(PLAYLIST_TOTAL)
-        progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
-        print("\r" + progress_string, end ="")
+            if (x <= r_train and n_train < n_total_train): 
+                write_split_data(path_train, row)
+                n_train += 1
+            elif (n_test < n_total_test): 
+                write_split_data(path_test, row)
+                n_test += 1
+            else: 
+                write_split_data(path_train, row)
+                n_train += 1
+            n_processed += 1
+            # progress stats
+            t_elapsed = time.time()-t_start
+            t_remaining = (n_total-n_processed)/n_processed * t_elapsed
+            print(  f"\rProgress: {n_processed}/{n_total} "
+                    + "Elapsed: {t_elapsed:.3f}s "
+                    + "Remaining: {t_remaining:.3f}s", end = "")
 
 # Ending
 print()
-print("* Playlist processed :", playlist_processed)
-print("* Training           :", training_count)
-print("* Testing            :", testing_count)
+print("* Playlist processed :", n_processed)
+print("* Training           :", n_train)
+print("* Testing            :", n_test)

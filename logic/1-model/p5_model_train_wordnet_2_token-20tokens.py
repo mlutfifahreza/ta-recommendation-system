@@ -84,7 +84,7 @@ print()
 
 # Writing to token-20tokens.csv
 csv_name = "token-20tokens.csv"
-with open(root_path + "/data/data-training/" + csv_name, 'w', encoding='UTF8', newline='') as f:
+with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, csv_name)
     print("Please wait...", end="\r")
