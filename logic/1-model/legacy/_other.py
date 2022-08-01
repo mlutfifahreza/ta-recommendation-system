@@ -22,3 +22,11 @@ def activate(inputs, weights):
 
 def error(outputs, targets):
     return np.square(np.subtract(targets, outputs)).mean()
+
+# plot final inputs - centroids
+plt.scatter(np.take(inputs, indices=0, axis=1), np.take(inputs, indices=1, axis=1), c=rgb_black)
+plt.scatter(np.take(centroids, indices=0, axis=1), np.take(centroids, indices=1, axis=1), c=rgb_red)
+plt.title('inputs - centroids')
+save_path = './result/fcm.png'
+plt.savefig(save_path, bbox_inches='tight')
+os.system(f"open {save_path}")

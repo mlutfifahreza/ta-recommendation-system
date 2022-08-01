@@ -3,6 +3,7 @@ import os, csv, time, numpy as np, random
 from tensorflow.keras.layers import Dense, InputLayer
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.utils import plot_model
 import matplotlib.pyplot as plt
 
 # General Variables
@@ -14,12 +15,12 @@ root_path = os.getcwd()
 size_embed = 6
 # Getting labels -> convert to one hot encoding
 label_encoding = {}
-csv_name = "track_count.csv"
-with open(root_path + "/data/data-training/" + csv_name) as csv_file:
+csv_path = root_path + "/data/data-training/track_count.csv"
+with open(csv_path) as csv_file:
     # starting
-    print(READING_STRING, csv_name)
+    print(READING_STRING, csv_path)
     print("Please wait...", end="\r")
-    TIME_START = time.time()
+    t_start = time.time()
     # read and process
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
@@ -27,7 +28,7 @@ with open(root_path + "/data/data-training/" + csv_name) as csv_file:
         if is_at_header: is_at_header = False
         else: label_encoding[row[0]] = None
     # finishing
-    print("Done in {:.2f}s".format(time.time()-TIME_START))
+    print("Done in {:.2f}s".format(time.time()-t_start))
 
 
 # Get one hot encoding
@@ -43,12 +44,12 @@ for key in label_encoding.keys():
 # Getting data training
 print(PROCESS_STRING, "Getting data training")
 inputs, targets = [], []
-csv_name = "playlists.csv"
-with open(root_path + "/data/data-training/" + csv_name) as csv_file:
+csv_path = root_path + "/data/data-training/playlists.csv"
+with open(csv_path) as csv_file:
     # starting
-    print(READING_STRING, csv_name)
+    print(READING_STRING, csv_path)
     print("Please wait...", end="\r")
-    TIME_START = time.time()
+    t_start = time.time()
     # read and process
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
@@ -64,7 +65,7 @@ with open(root_path + "/data/data-training/" + csv_name) as csv_file:
                 # add label as target
                 targets.append(np.array(label_encoding[row[i]], dtype='i'))
     # finishing
-    print("Done in {:.2f}s".format(time.time()-TIME_START))
+    print("Done in {:.2f}s".format(time.time()-t_start))
 n_data_train = len(inputs)
 print("n_data_train =", n_data_train)
 # Shuffle data training
@@ -90,7 +91,14 @@ model = Sequential([
     Dense(size_embed, activation='sigmoid', name="hidden"),
     Dense(targets.shape[1], activation='sigmoid', name="output")
 ])
-model.compile(Adam(learning_rate), loss='mse', metrics=['accuracy'])
+plot_model(
+    model, to_file = "./result/cbow_arch.png",
+    show_shapes = True,
+    show_layer_names = True)
+model.compile(
+    Adam(learning_rate),
+    loss='mse',
+    metrics=['accuracy'])
 history = model.fit(
     x = inputs, 
     y = targets, 
@@ -119,15 +127,14 @@ plt.savefig('./result/cbow_loss.png', bbox_inches='tight')
 # os.system("open ./result/cbow_loss.png")
 
 # Extract embeddings
-csv_name = "embeddings.csv"
-path = root_path + "/data/data-training/" + csv_name
-with open(path, 'w', encoding = 'UTF8', newline = '') as f:
+csv_path = root_path + "/data/data-training/embeddings.csv"
+with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, csv_name)
+    print(EXPORT_STRING, csv_path)
     print("Please wait...", end="\r")
     n_total = track_count
     n_done = 0
-    TIME_START = time.time()
+    t_start = time.time()
     writer = csv.writer(f)
     # write header
     header = ["one_hot_index", "vector"]
@@ -141,7 +148,7 @@ with open(path, 'w', encoding = 'UTF8', newline = '') as f:
         writer.writerow([i, embed])
         # progress stats
         n_done += 1
-        t_elapsed = time.time()-TIME_START
+        t_elapsed = time.time()-t_start
         t_remaining = (n_total-n_done)/n_done * t_elapsed
         progress_string = "Processed: " + str(n_done) + "/" + str(n_total)
         progress_string += " Elapsed: " + "{:.2f}".format(t_elapsed) + "s Remaining: " + "{:.2f}".format(t_remaining) + "s"

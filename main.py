@@ -1,7 +1,7 @@
 import os
 
 RUNNING_STRING = '\033[33m' + "Running :" + '\033[0m'
-n_playlist = 2000
+n_playlist = 10
 
 commands = [
     # PROCESS : DATA
@@ -10,15 +10,15 @@ commands = [
     f"python3 logic/0-data/p3_data_split.py {n_playlist}",
 
     # PROCESS : TRAINING Model CF Popularity
-    # "python3 logic/1-model/p4_model_train_cf_popularity.py",
+    "python3 logic/1-model/p4_model_train_popularity.py",
     
     # PROCESS : TRAINING Model CF Wordnet
-    # f"python3 logic/1-model/p5_model_train_cf_wordnet_1_tokens.py {n_playlist}",
-    # f"python3 logic/1-model/p5_model_train_cf_wordnet_2_token-20tokens.py {n_playlist}",
-    # f"python3 logic/1-model/p5_model_train_cf_wordnet_3_token-50tracks.py {n_playlist}",
+    f"python3 logic/1-model/p5_model_train_wordnet_1_tokens.py {n_playlist}",
+    f"python3 logic/1-model/p5_model_train_wordnet_2_token-20tokens.py {n_playlist}",
+    f"python3 logic/1-model/p5_model_train_wordnet_3_token-50tracks.py {n_playlist}",
 
     # PROCESS : TRAINING Model CBF Word2Vec Continuous Bag of Word (CBOW)
-    # "python3 logic/1-model/p6_model_train_cbf_cbow.py",
+    "python3 logic/1-model/p6_model_train_cbow.py",
 
     # EXTRA
     # "python3 logic/0-data/extract_playlist_titles.py",
