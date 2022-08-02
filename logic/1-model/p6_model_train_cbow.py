@@ -92,7 +92,7 @@ model = Sequential([
     Dense(targets.shape[1], activation='sigmoid', name="output")
 ])
 plot_model(
-    model, to_file = "./result/cbow_arch.png",
+    model, to_file = "./data/result/cbow_arch.png",
     show_shapes = True,
     show_layer_names = True)
 model.compile(
@@ -100,10 +100,10 @@ model.compile(
     loss='mse',
     metrics=['accuracy'])
 history = model.fit(
-    x = inputs, 
-    y = targets, 
-    epochs = n_epoch, 
-    verbose = 1, 
+    x = inputs,
+    y = targets,
+    epochs = n_epoch,
+    verbose = 'auto',
     validation_split= 1/9)
 
 # summarize history for accuracy
@@ -113,21 +113,22 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('./result/cbow_accuracy.png', bbox_inches='tight')
-# os.system("open ./result/cbow_accuracy.png")
+plt.savefig('./data/result/cbow_accuracy.png', bbox_inches='tight')
+# os.system("open ./data/result/cbow_accuracy.png")
 
 # summarize history for loss
+plt.clf()
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
 plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('./result/cbow_loss.png', bbox_inches='tight')
-# os.system("open ./result/cbow_loss.png")
+plt.savefig('./data/result/cbow_loss.png', bbox_inches='tight')
+# os.system("open ./data/result/cbow_loss.png")
 
 # Extract embeddings
-csv_path = root_path + "/data/data-training/embeddings.csv"
+csv_path = root_path + "/data/result/cbow_embeddings.csv"
 with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, csv_path)
@@ -144,7 +145,7 @@ with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
         embed = []
         for j in range(size_embed):
             embed.append(model.layers[1].get_weights()[0][j][i])
-        embed = "_".join([str(e) for e in embed])
+        embed = " ".join([str(e) for e in embed])
         writer.writerow([i, embed])
         # progress stats
         n_done += 1

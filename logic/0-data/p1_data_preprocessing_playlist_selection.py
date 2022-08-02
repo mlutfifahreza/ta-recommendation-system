@@ -69,8 +69,8 @@ with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
                             "artist_name" : artist_name,
                         }
                 writer.writerow(playlist_detail)
-                n_processed += 1
                 # progress stats
+                n_processed += 1
                 t_elapsed = time.time()-t_start
                 t_remaining = (n_to_process-n_processed)/n_processed * t_elapsed
                 print(f"\rProgress: {n_processed}/{n_to_process} Elapsed: {t_elapsed:.3f}s Remaining: {t_remaining:.3f}s", end ="")
