@@ -11,8 +11,7 @@ track_count = {}
 csv_name = "track_count.csv"
 with open(root_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
-    print(READING_STRING, csv_name)
-    print("Please wait...", end="\r")
+    print(READING_STRING, csv_name, end = " ")
     start_time = time.time()
     # read and process
     csv_reader = csv.reader(csv_file, delimiter=',')
@@ -21,8 +20,7 @@ with open(root_path + "/data/data-training/" + csv_name) as csv_file:
         if is_at_header: is_at_header = False
         else: track_count[row[0]] = int(row[1]) # row 0 = track_id -> key, row 4 = count -> value
     # finished
-    time_elapsed = "{:.2f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s")
+    print(f"✅ {time.time()-start_time:.3f}s")
 
 # Reading token_tracks.csv dataset
 token_tracks = {} # key = token, value = list of [track id, count]
@@ -64,8 +62,7 @@ csv_name = "token-50tracks.csv"
 with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     TIME_START = time.time()
-    print(EXPORT_STRING, csv_name)
-    print("Please wait...", end="\r")
+    print(EXPORT_STRING, csv_name, end = " ")
     start_time = time.time()
     writer = csv.writer(f)
     # write header
@@ -78,4 +75,5 @@ with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8',
         writer.writerow([key] + ids)
     # finished
     time_elapsed = "{:.2f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s")
+    print(f"✅ {time_elapsed}s")
+

@@ -54,8 +54,7 @@ inputs = []
 csv_path = root_path + "/data/result/cbow_embeddings.csv"
 with open(csv_path) as csv_file:
     # starting
-    print(READING_STRING, csv_path)
-    print("Please wait...", end="\r")
+    print(READING_STRING, csv_path, end = " ")
     t_start = time.time()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
@@ -64,7 +63,7 @@ with open(csv_path) as csv_file:
         inputs.append(np.array(embed))
     # finishing
     inputs = np.array(inputs)
-    print(f"Done in {time.time()-t_start:.3f}s")
+    print(f"✅ {time.time()-t_start:.3f}s")
 print("inputs.shape =", inputs.shape)
 print("example:", list(inputs[20]))
 
@@ -74,7 +73,7 @@ n_clusters = n_data//200
 n_dimension = inputs.shape[1]
 fuzzy_param = 1.8
 max_iter = 20
-threshold = 1e-10
+threshold = 1e-8
 
 # FCM: init weights, centroids
 weights = np.random.rand(n_data, n_clusters)
@@ -106,16 +105,17 @@ for i in range(max_iter):
         # progress stats
         t_elapsed = time.time()-t_start
         print(f"\rIteration: {i+1}/{max_iter} Status: Done - "
-            + f"Elapsed: {t_elapsed:.3f}s E: {new_sse} dE:{sse_diff}")
+            + f"Elapsed = {t_elapsed:.3f}s E = {new_sse} dE = {sse_diff}")
     else:
         print(f"\rIteration: {i+1}/{max_iter} Status: stopping, change of error < threshold")
         break
 # Save learning logs
-print("sse =",log_sse)
+print("sse =")
+for sse in log_sse:
+    print(sse)
 plt.plot(list(range(1,len(log_sse)+1)), log_sse)
 plt.ylabel("Sum of squared error (SSE)")
 plt.xlabel("Iteration")
-plt.plot()
 plt.title("FCM - Error Learning Logs")
 plt.savefig("./data/result/fcm_error.png", bbox_inches="tight")
 os.system("open ./data/result/fcm_error.png")

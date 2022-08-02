@@ -1,10 +1,10 @@
-import os, csv, time, numpy as np, random
-
+import os, csv, time, random
+import numpy as np
+import matplotlib.pyplot as plt
 from tensorflow.keras.layers import Dense, InputLayer
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
-import matplotlib.pyplot as plt
 
 # General Variables
 READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
@@ -28,7 +28,7 @@ with open(csv_path) as csv_file:
         if is_at_header: is_at_header = False
         else: label_encoding[row[0]] = None
     # finishing
-    print("Done in {:.2f}s".format(time.time()-t_start))
+    print(f"Done in {(time.time()-t_start):.2f}s")
 
 
 # Get one hot encoding
@@ -65,7 +65,7 @@ with open(csv_path) as csv_file:
                 # add label as target
                 targets.append(np.array(label_encoding[row[i]], dtype='i'))
     # finishing
-    print("Done in {:.2f}s".format(time.time()-t_start))
+    print(f"✅ {(time.time()-t_start):.3f}s")
 n_data_train = len(inputs)
 print("n_data_train =", n_data_train)
 # Shuffle data training
@@ -94,7 +94,10 @@ model = Sequential([
 plot_model(
     model, to_file = "./data/result/cbow_arch.png",
     show_shapes = True,
-    show_layer_names = True)
+    show_dtype = True,
+    expand_nested = True,
+    show_layer_names = True,
+    show_layer_activations = True)
 model.compile(
     Adam(learning_rate),
     loss='mse',
@@ -113,8 +116,9 @@ plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('./data/result/cbow_accuracy.png', bbox_inches='tight')
-# os.system("open ./data/result/cbow_accuracy.png")
+save_path = "./data/result/cbow_accuracy.png"
+plt.savefig(save_path, bbox_inches='tight')
+os.system(f"open {save_path}")
 
 # summarize history for loss
 plt.clf()
@@ -124,15 +128,16 @@ plt.title('model loss')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-plt.savefig('./data/result/cbow_loss.png', bbox_inches='tight')
-# os.system("open ./data/result/cbow_loss.png")
+save_path = "./data/result/cbow_loss.png"
+plt.savefig(save_path, bbox_inches='tight')
+os.system(f"open {save_path}")
+
 
 # Extract embeddings
 csv_path = root_path + "/data/result/cbow_embeddings.csv"
 with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, csv_path)
-    print("Please wait...", end="\r")
+    print(EXPORT_STRING, csv_path, end = " ")
     n_total = track_count
     n_done = 0
     t_start = time.time()
@@ -154,3 +159,5 @@ with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
         progress_string = "Processed: " + str(n_done) + "/" + str(n_total)
         progress_string += " Elapsed: " + "{:.2f}".format(t_elapsed) + "s Remaining: " + "{:.2f}".format(t_remaining) + "s"
         print("\r" + progress_string, end ="")
+    # finishing
+    print(f"✅ {(time.time()-t_start):.3f}s")

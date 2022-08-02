@@ -51,12 +51,14 @@ with open(path) as csv_file:
             # progress stats
             t_elapsed = time.time()-t_start
             t_remaining = (n_total-n_processed)/n_processed * t_elapsed
-            print(  f"\rProgress: {n_processed}/{n_total} "
-                    + "Elapsed: {t_elapsed:.3f}s "
-                    + "Remaining: {t_remaining:.3f}s", end = "")
+            print(f"\rProgress: {n_processed}/{n_total} "
+                + f"Elapsed: {t_elapsed:.3f}s "
+                + f"Remaining: {t_remaining:.3f}s", end = "")
+    # finishing
+    print()
 
 # Ending
-print()
+
 print("* Playlist processed :", n_processed)
 print("* Training           :", n_train)
 print("* Testing            :", n_test)

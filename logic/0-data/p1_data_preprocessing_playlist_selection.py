@@ -82,7 +82,7 @@ with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
 csv_path = root_path + "/data/data-all/" + "tracks.csv"
 with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, csv_path)
+    print(EXPORT_STRING, csv_path, end = " ")
     writer = csv.writer(f)
     t_start = time.time()
     # write header
@@ -99,4 +99,8 @@ with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
             track["artist_name"],
         ])
     # ending
-    print(f"Done in {time.time()-t_start:.3f}s")
+    print(f"✅ {time.time()-t_start:.3f}s")
+
+# Finishing
+
+print("Unique tracks found\t:", len(tracks))

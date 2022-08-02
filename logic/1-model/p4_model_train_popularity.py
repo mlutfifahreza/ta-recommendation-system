@@ -11,7 +11,7 @@ csv_path = root_path + "/data/data-training/playlists.csv"
 track_count = {}
 with open(csv_path) as csv_file:
     # starting
-    print(READING_STRING, csv_path)
+    print(READING_STRING, csv_path, end = " ")
     t_start = time.time()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
@@ -20,7 +20,7 @@ with open(csv_path) as csv_file:
             if id in track_count: track_count[id] += 1
             else: track_count[id] = 1
     # finished
-    print(f"Done in {time.time() - t_start:.3f}s")
+    print(f"✅ {time.time() - t_start:.3f}s")
 
 # Convert to list
 track_count_list = []
@@ -34,7 +34,7 @@ csv_path = root_path + "/data/data-training/track_count.csv"
 with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     TIME_START = time.time()
-    print(EXPORT_STRING, csv_path)
+    print(EXPORT_STRING, csv_path, end = " ")
     t_start = time.time()
     writer = csv.writer(f)
     # write header
@@ -44,4 +44,10 @@ with open(csv_path, 'w', encoding = 'UTF8', newline = '') as f:
     for item in track_count_list:
         writer.writerow(item)
     # finishing
-    print(f"Done in {time.time() - t_start:.3f}s")
+    print(f"✅ {time.time() - t_start:.3f}s")
+
+# Finishing
+
+print("* Tracks processed :", len(track_count_list))
+print("* Max count        :", track_count_list[0][1])
+print("* Min count        :", track_count_list[-1][1])

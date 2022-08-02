@@ -1,7 +1,7 @@
 import os
 
 RUNNING_STRING = '\033[33m' + "Running :" + '\033[0m'
-n_playlist = 100
+n_playlist = 50000
 
 commands = [
     # PROCESS : DATA

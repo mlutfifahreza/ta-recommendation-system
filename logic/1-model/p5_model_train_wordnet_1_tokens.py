@@ -13,7 +13,7 @@ with open(root_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print("Please wait...", end="\r")
-    total_count = int(PLAYLIST_TOTAL * 0.8)
+    total_count = int(PLAYLIST_TOTAL * 0.9)
     processed_count = 0
     TIME_START = time.time()
     # read and process
@@ -28,21 +28,20 @@ with open(root_path + "/data/data-training/" + csv_name) as csv_file:
                 if token in token_tracks.keys(): 
                     token_tracks[token] = list(set(token_tracks[token] + track_ids))
                 else: token_tracks[token] = track_ids
-        # progress stats
-        processed_count += 1
-        time_elapsed = time.time()-TIME_START
-        time_remaining = (total_count-processed_count)/processed_count * time_elapsed
-        progress_string = "Processed: " + str(processed_count) + "/" + str(total_count)
-        progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
-        print("\r" + progress_string, end ="")
+            # progress stats
+            processed_count += 1
+            time_elapsed = time.time()-TIME_START
+            time_remaining = (total_count-processed_count)/processed_count * time_elapsed
+            progress_string = "Processed: " + str(processed_count) + "/" + str(total_count)
+            progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
+            print("\r" + progress_string, end ="")
     print()
 
 # Writing to token_tracks.csv
 csv_name = "token_tracks.csv"
 with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, csv_name)
-    print("Please wait...", end="\r")
+    print(EXPORT_STRING, csv_name, end = " ")
     start_time = time.time()
     writer = csv.writer(f)
     # write header
@@ -52,4 +51,7 @@ with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8',
     for key, value in token_tracks.items():
         writer.writerow([key] + value)
     time_elapsed = "{:.2f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s")
+    print(f"✅ {time_elapsed}s")
+
+# Finishing
+print("* Unique tokens found  :", len(token_tracks))

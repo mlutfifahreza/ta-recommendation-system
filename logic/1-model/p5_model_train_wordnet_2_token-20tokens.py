@@ -13,11 +13,9 @@ PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
 csv_name = "token_tracks.csv"
 with open(root_path + "/data/data-training/" + csv_name) as csv_file:
     # starting
-    print(READING_STRING, csv_name)
-    print("Please wait...", end="\r")
-    total_count = int(PLAYLIST_TOTAL * 0.8)
+    print(READING_STRING, csv_name, end = " ")
     processed_count = 0
-    TIME_START = time.time()
+    t_start = time.time()
     # read and process
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
@@ -25,21 +23,18 @@ with open(root_path + "/data/data-training/" + csv_name) as csv_file:
         if is_at_header: is_at_header = False
         else:
             tokens.append(str(row[0]))
-        # progress stats
-        processed_count += 1
-        time_elapsed = time.time()-TIME_START
-        time_remaining = (total_count-processed_count)/processed_count * time_elapsed
-        progress_string = "Processed: " + str(processed_count) + "/" + str(total_count)
-        progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
-        print("\r" + progress_string, end ="")
-    print()
+            # progress stats
+            processed_count += 1
+            progress_string = f"Processed: {processed_count} - Elapsed: {time.time()-t_start:.3f}"
+            print("\r" + progress_string, end ="")
+    print(f"✅ {time.time()-t_start:.3f}s")
 
 # LEARN: Generating token-20tokens
 print(PROCESS_STRING, "Generating token-20tokens")
 similarities = {}
 processed_count = 0
-TIME_START = time.time()
-TOTAL_TO_PROCESS = len(tokens)
+t_start = time.time()
+n_tokens = len(tokens)
 for i in range(len(tokens)):
     # starting
     token_1 = tokens[i]
@@ -75,10 +70,10 @@ for i in range(len(tokens)):
         similarities[token_1].append(similarity_with_token2)
     # progress stats
     processed_count += 1
-    time_elapsed = time.time()-TIME_START
-    time_remaining = (TOTAL_TO_PROCESS-processed_count)/processed_count * time_elapsed
-    progress_string = "Processed: " + str(processed_count) + "/" + str(TOTAL_TO_PROCESS)
-    progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
+    t_elapsed = time.time()-t_start
+    time_remaining = (n_tokens-processed_count)/processed_count * t_elapsed
+    progress_string = "Processed: " + str(processed_count) + "/" + str(n_tokens)
+    progress_string += " Elapsed: " + "{:.2f}".format(t_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
     print("\r" + progress_string, end ="")
 print()
 
@@ -86,8 +81,7 @@ print()
 csv_name = "token-20tokens.csv"
 with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, csv_name)
-    print("Please wait...", end="\r")
+    print(EXPORT_STRING, csv_name, end=" ")
     start_time = time.time()
     writer = csv.writer(f)
     # write header
@@ -104,5 +98,5 @@ with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8',
             else: break
         if len(row) > 1: writer.writerow(row)
     # progress
-    time_elapsed = "{:.2f}".format(time.time()-start_time)
-    print(f"Done in {time_elapsed}s")
+    t_elapsed = "{:.2f}".format(time.time()-start_time)
+    print(f"✅ {time.time()-start_time:.3f}s")
