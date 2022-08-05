@@ -89,17 +89,18 @@ with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
     header = ['token', '20tokens']
     writer.writerow(header)
     # write content
-    for key in similarities:
+    for token in similarities:
         # sort -> get top 20
-        similarities[key].sort(key=lambda row: (row[1]), reverse=True)
-        similarities_top20 = similarities[key][:20]
-        row = [key]
+        similarities[token].sort(key=lambda row: (row[1]), reverse=True)
+        similarities_top20 = similarities[token][:20]
+        top20 = ''
         for sim in similarities_top20:
             if sim[1] > 0: 
                 # sim[0] = token, sim[1] = value
-                row.append(f'{sim[0]} {sim[1]}')
-            else: break
-        if len(row) > 1: writer.writerow(row)
+                top20 += f'{sim[0]}:{sim[1]} '
+            else:
+                break
+        if len(top20) > 1:
+            writer.writerow([token, top20])
     # progress
-    t_elapsed = '{:.2f}'.format(time.time()-t_start)
     print(f'✅ Finished: {time.time() - t_start:.3f}s')

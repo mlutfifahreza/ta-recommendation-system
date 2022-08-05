@@ -3,7 +3,7 @@ import os
 RUNNING_STRING = '\033[33m' + 'Running:' + '\033[0m'
 n_playlist = 100
 size_embed = 16
-n_clusters = n_playlist//200
+n_clusters = 100
 
 commands = [
     # PROCESS: DATA

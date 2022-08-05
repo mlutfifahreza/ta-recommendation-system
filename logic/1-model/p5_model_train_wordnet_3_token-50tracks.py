@@ -56,11 +56,11 @@ with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
     header = ['token', '50tracks']
     writer.writerow(header)
     # write content
-    for key, value in token_tracks.items():
-        ids = []
-        for v in value:
-            ids.append(v[0]) # v[0] = track id
-        writer.writerow([key] + ids)
+    for token, track_count in token_tracks.items():
+        track_ids = ''
+        for value in track_count:
+            track_ids += value[0] + ' '
+        writer.writerow([token, track_ids])
     # Finished
     print(f'✅ Finished: {time.time() - t_start:.3f}s')
 
