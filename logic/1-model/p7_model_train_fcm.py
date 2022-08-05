@@ -1,12 +1,14 @@
-import os, time, csv
+import os, time, csv, sys
 import numpy as np
 import matplotlib.pyplot as plt
 
 # General Variables
-READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
-EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
-PROCESS_STRING = '\033[35m' + "Process :" + '\033[0m'
+READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
+EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
+PROCESS_STRING = '\033[35m' + 'Process:' + '\033[0m'
 root_path = os.getcwd()
+n_playlist = int(sys.argv[1])
+size_embed = int(sys.argv[2])
 
 # FCM: helper functions
 def square_dist(x, y):
@@ -51,21 +53,21 @@ def update_weights(weights, inputs, centroids, p = 1.75):
 # FCM: init inputs
 # Getting embedding as inputs
 inputs = []
-csv_path = root_path + "/data/result/cbow_embeddings.csv"
-with open(csv_path) as csv_file:
+rel_path = '/data/result/cbow_embeddings.csv'
+with open(root_path + rel_path) as csv_file:
     # starting
-    print(READING_STRING, csv_path, end = " ")
+    print(READING_STRING, root_path + rel_path, end = ' ')
     t_start = time.time()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
-        embed = [float(x) for x in row["vector"].split()]
+        embed = [float(x) for x in row['vector'].split()]
         inputs.append(np.array(embed))
     # finishing
     inputs = np.array(inputs)
-    print(f"✅ {time.time()-t_start:.3f}s")
-print("inputs.shape =", inputs.shape)
-print("example:", list(inputs[20]))
+    print(f'>> {time.time()-t_start:.3f}s ✅')
+print('inputs.shape =', inputs.shape)
+print('example:', list(inputs[20]))
 
 # FCM: variables update
 n_data = inputs.shape[0]
@@ -79,18 +81,19 @@ threshold = 1e-8
 weights = np.random.rand(n_data, n_clusters)
 centroids = None
 # FCM: learn
-print(PROCESS_STRING, "FCM Learning")
-print(f"Parameters:"
-    + f"\n  fuzzy param = {fuzzy_param} "
-    + f"\n  threshold = {threshold} "
-    + f"\n  num of clusters = {n_clusters}")
+print(PROCESS_STRING, 'FCM Learning')
+print(f'Parameters:'
+    + f'\n  data shape  = {inputs.shape} '
+    + f'\n  fuzzy param = {fuzzy_param} '
+    + f'\n  threshold   = {threshold} '
+    + f'\n  n clusters  = {n_clusters}')
 log_sse = []
 log_sse_diff = []
-last_sse = float("inf")
+last_sse = float('inf')
 for i in range(max_iter):
     # For progress checking
     t_start = time.time()
-    print(f"Iteration: {i+1}/{max_iter} Status: computing...", end ="\r")
+    print(f'Iteration: {i+1}/{max_iter} Status: computing...', end ='\r')
     # learn
     new_centroids = get_centroids(weights, inputs, fuzzy_param)
     new_weights = update_weights(weights, inputs, new_centroids, fuzzy_param)
@@ -104,21 +107,21 @@ for i in range(max_iter):
         log_sse_diff.append(sse_diff)
         # progress stats
         t_elapsed = time.time()-t_start
-        print(f"\rIteration: {i+1}/{max_iter} Status: Done - "
-            + f"Elapsed = {t_elapsed:.3f}s E = {new_sse} dE = {sse_diff}")
+        print(f'\rIteration: {i+1}/{max_iter} Status: - '
+            + f'Elapsed = {t_elapsed:.3f}s E = {new_sse} dE = {sse_diff}')
     else:
-        print(f"\rIteration: {i+1}/{max_iter} Status: stopping, change of error < threshold")
+        print(f'\rIteration: {i+1}/{max_iter} Status: stopping, change of error < threshold')
         break
 # Save learning logs
-print("sse =")
+print('sse =')
 for sse in log_sse:
-    print(sse)
+    print(f'  {sse}')
 plt.plot(list(range(1,len(log_sse)+1)), log_sse)
-plt.ylabel("Sum of squared error (SSE)")
-plt.xlabel("Iteration")
-plt.title("FCM - Error Learning Logs")
-plt.savefig("./data/result/fcm_error.png", bbox_inches="tight")
-os.system("open ./data/result/fcm_error.png")
+plt.ylabel('Sum of squared error (SSE)')
+plt.xlabel('Iteration')
+plt.title('FCM - Error Learning Logs')
+plt.savefig(f'./data/result/fcm_errorsize_embed_{size_embed}_with_{n_playlist}_playlists.png', bbox_inches='tight')
+# os.system('open ./data/result/fcm_error.png')
 
 
 # Save cluster-100tracks

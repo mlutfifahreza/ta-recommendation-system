@@ -1,57 +1,55 @@
 import os, csv, time, sys
 
 # General Variables
-READING_STRING = '\033[94m' + "Reading :" + '\033[0m'
-EXPORT_STRING = '\033[92m' + "Export :" + '\033[0m'
+READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
+EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
 root_path = os.getcwd()
 token_tracks = {}
 PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
 
 # Reading playlists.csv dataset
-csv_name = "playlists.csv"
-with open(root_path + "/data/data-training/" + csv_name) as csv_file:
+rel_path = '/data/data-training/playlists.csv'
+with open(root_path + rel_path) as csv_file:
     # starting
-    print(READING_STRING, csv_name)
-    print("Please wait...", end="\r")
+    print(READING_STRING, rel_path)
     total_count = int(PLAYLIST_TOTAL * 0.9)
     processed_count = 0
-    TIME_START = time.time()
+    t_start = time.time()
     # read and process
-    csv_reader = csv.reader(csv_file, delimiter=',')
+    csv_reader = csv.DictReader(csv_file, delimiter=',')
     is_at_header = True
     for row in csv_reader:
-        if is_at_header: is_at_header = False
-        else:
-            title, track_ids = row[1], row[2:]
-            for token in title.split():
-                # add track_ids without duplicate
-                if token in token_tracks.keys(): 
-                    token_tracks[token] = list(set(token_tracks[token] + track_ids))
-                else: token_tracks[token] = track_ids
-            # progress stats
-            processed_count += 1
-            time_elapsed = time.time()-TIME_START
-            time_remaining = (total_count-processed_count)/processed_count * time_elapsed
-            progress_string = "Processed: " + str(processed_count) + "/" + str(total_count)
-            progress_string += " Elapsed: " + "{:.2f}".format(time_elapsed) + "s Remaining: " + "{:.2f}".format(time_remaining) + "s"
-            print("\r" + progress_string, end ="")
-    print()
+        title = row['title']
+        track_ids = row['track_ids'].split()
+        for token in title.split():
+            # add track_ids without duplicate
+            if token in token_tracks.keys(): 
+                token_tracks[token] = list(set(token_tracks[token] + track_ids))
+            else: token_tracks[token] = track_ids
+        # progress stats
+        processed_count += 1
+        t_elapsed = time.time()-t_start
+        t_remaining = (total_count-processed_count)/processed_count * t_elapsed
+        print(f'\rProgress: {processed_count}/{total_count} '
+            + f'Elapsed: {t_elapsed:.3f}s '
+            + f'Remaining: {t_remaining:.3f}s', end = ' ')
+    print(f'\n✅ Finished: {time.time() - t_start:.3f}s')
 
 # Writing to token_tracks.csv
-csv_name = "token_tracks.csv"
-with open(root_path + "/data/data-training/" + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
+rel_path = '/data/data-training/token-tracks.csv'
+with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, csv_name, end = " ")
-    start_time = time.time()
+    print(EXPORT_STRING, rel_path)
+    t_start = time.time()
     writer = csv.writer(f)
     # write header
-    header = ["token","track_ids"]
+    header = ['token','track_ids']
     writer.writerow(header)
     # write content
     for key, value in token_tracks.items():
-        writer.writerow([key] + value)
-    time_elapsed = "{:.2f}".format(time.time()-start_time)
-    print(f"✅ {time_elapsed}s")
+        writer.writerow([key, ' '.join(value)])
+    t_elapsed = '{:.2f}'.format(time.time()-t_start)
+    print(f'✅ Finished: {time.time() - t_start:.3f}s')
 
 # Finishing
-print("* Unique tokens found  :", len(token_tracks))
+print('ℹ️  Unique tokens:', len(token_tracks))

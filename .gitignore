@@ -1,7 +1,7 @@
 # Big files
 data/mpd/spotify_million_playlist_dataset/
 *.csv
-!characters_mapping.csv
+!characters-mapping.csv
 
 # MacOS
 .DS_Store

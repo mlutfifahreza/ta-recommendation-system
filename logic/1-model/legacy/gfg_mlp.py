@@ -19,10 +19,10 @@ gray_scale = 255
 x_train /= gray_scale
 x_test /= gray_scale
 
-print("Feature matrix:", x_train.shape)
-print("Target matrix:", x_test.shape)
-print("Feature matrix:", y_train.shape)
-print("Target matrix:", y_test.shape)
+print('Feature matrix:', x_train.shape)
+print('Target matrix:', x_test.shape)
+print('Feature matrix:', y_train.shape)
+print('Target matrix:', y_test.shape)
 
 fig, ax = plt.subplots(10, 10)
 k = 0
