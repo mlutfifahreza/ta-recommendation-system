@@ -1,18 +1,28 @@
-import os, csv, time
+import os, csv, time, sys
+
+# From input arguments
+n_playlist = int(sys.argv[1])
+size_embed = int(sys.argv[2])
+learn_rate = float(sys.argv[3])
+n_epoch = int(sys.argv[4])
 
 # General Variables
 READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
-root_path = os.getcwd()
+PROCESS_STRING = '\033[35m' + 'Process:' + '\033[0m'
+path_root = os.getcwd()
+path_pop = f'/data/model/pop/playlist:{n_playlist}'
+path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
+path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
+path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
 
 # Reading playlists.csv dataset
 track_count = []
-rel_path = '/data/data-training/playlists.csv'
-
+path_relative = '/data/data-training/playlists.csv'
 track_count = {}
-with open(root_path + rel_path) as csv_file:
+with open(path_root + path_relative) as csv_file:
     # starting
-    print(READING_STRING, rel_path)
+    print(READING_STRING, path_relative)
     t_start = time.time()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
@@ -30,11 +40,15 @@ for k,v in track_count.items():
 # Sort with index 1: count value
 track_count_list.sort(key=lambda row: (row[1]), reverse=True)
 
+# Creating saving directory path
+if not os.path.exists(path_root + path_pop):
+    os.makedirs(path_root + path_pop)
+
 # Writing to track_count.csv
-rel_path = '/data/data-training/track-count.csv'
-with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
+path_relative = path_pop + '/track-count.csv'
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, rel_path)
+    print(EXPORT_STRING, path_relative)
     t_start = time.time()
     writer = csv.writer(f)
     # write header

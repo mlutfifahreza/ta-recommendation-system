@@ -182,4 +182,4 @@ def plot_inputs_centroids(inputs, centroids, i):
     plt.scatter(np.take(inputs, 0, axis=1), np.take(inputs, 1, axis=1), c = '#000000')
     plt.scatter(np.take(centroids, 0, axis=1), np.take(centroids, 1, axis=1), c = '#ff0000')
     plt.title(f'itr {i}: inputs - centroids coordinates')
-    plt.savefig(f'./result/fcm_inputs-centroid-{i}.png')
+    plt.savefig(f'/result/fcm_inputs-centroid-{i}.png')

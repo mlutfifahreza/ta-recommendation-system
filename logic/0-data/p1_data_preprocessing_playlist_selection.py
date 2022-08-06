@@ -7,11 +7,11 @@ READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
 n_mpd_file = 1000 # number of files inside mpd data
 n_mpd_file_playlist = 1000 # count of playlist inside each file
-root_path = os.getcwd()
+path_root = os.getcwd()
 
 # Prepare characters mapping
 characters_mapping = {}
-with open(root_path + '/data/data-all/characters-mapping.csv') as csv_file:
+with open(path_root + '/data/data-all/characters-mapping.csv') as csv_file:
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
         characters_mapping[row['char']] = row['map']
@@ -24,16 +24,16 @@ for i in range(n_mpd_file):
     mpd_file_names.append('mpd.slice.' + str(start) + '-' + str(end) + '.json')
 
 # Read all mpd files -> create playlists.csv
-mpd_path = root_path + '/data/mpd/spotify_million_playlist_dataset/data/'
-rel_path = '/data/data-all/playlists.csv'
+mpd_path = path_root + '/data/mpd/spotify_million_playlist_dataset/data/'
+path_relative = '/data/data-all/playlists.csv'
 
 tracks = {}
-with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     n_processed = 0
     n_to_process = int(sys.argv[1]) if len(sys.argv) > 1 else 200000
     t_start = time.time()
-    print(EXPORT_STRING, rel_path)
+    print(EXPORT_STRING, path_relative)
     writer = csv.writer(f)
     # write header
     header = ['playlist_id','title','track_ids']
@@ -83,11 +83,11 @@ with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
     print(f'\n✅ Finished: {time.time()-t_start:.3f}s')
 
 # Writing tracks.csv sort by id
-rel_path = '/data/data-all/tracks.csv'
+path_relative = '/data/data-all/tracks.csv'
 
-with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, rel_path)
+    print(EXPORT_STRING, path_relative)
     writer = csv.writer(f)
     t_start = time.time()
     # write header

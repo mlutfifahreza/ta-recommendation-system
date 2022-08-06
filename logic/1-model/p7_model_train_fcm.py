@@ -2,13 +2,22 @@ import os, time, csv, sys
 import numpy as np
 import matplotlib.pyplot as plt
 
+# From input arguments
+n_playlist = int(sys.argv[1])
+size_embed = int(sys.argv[2])
+learn_rate = float(sys.argv[3])
+n_epoch = int(sys.argv[4])
+n_cluster = int(sys.argv[5])
+
 # General Variables
 READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
 PROCESS_STRING = '\033[35m' + 'Process:' + '\033[0m'
-root_path = os.getcwd()
-n_playlist = int(sys.argv[1])
-size_embed = int(sys.argv[2])
+path_root = os.getcwd()
+path_pop = f'/data/model/pop/playlist:{n_playlist}'
+path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
+path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
+path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
 
 # FCM: helper functions
 def square_dist(x, y):
@@ -53,10 +62,10 @@ def update_weights(weights, inputs, centroids, p = 1.75):
 # FCM: init inputs
 # Getting embedding as inputs
 inputs = []
-rel_path = '/data/result/cbow_embeddings.csv'
-with open(root_path + rel_path) as csv_file:
+path_relative =  path_cbow + '/embeddings.csv'
+with open(path_root + path_relative) as csv_file:
     # starting
-    print(READING_STRING, root_path + rel_path, end = ' ')
+    print(READING_STRING, path_relative)
     t_start = time.time()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
@@ -65,9 +74,9 @@ with open(root_path + rel_path) as csv_file:
         inputs.append(np.array(embed))
     # finishing
     inputs = np.array(inputs)
-    print(f'>> {time.time()-t_start:.3f}s ✅')
-print('inputs.shape =', inputs.shape)
-print('example:', list(inputs[20]))
+    print(f'✅ Finished: {time.time()-t_start:.3f}s')
+print('ℹ️  inputs.shape =', inputs.shape)
+print('ℹ️  example:', list(inputs[20]))
 
 # FCM: variables update
 n_data = inputs.shape[0]
@@ -88,7 +97,6 @@ print(f'Parameters:'
     + f'\n  threshold   = {threshold} '
     + f'\n  n clusters  = {n_clusters}')
 log_sse = []
-log_sse_diff = []
 last_sse = float('inf')
 for i in range(max_iter):
     # For progress checking
@@ -104,7 +112,6 @@ for i in range(max_iter):
         centroids = new_centroids
         last_sse = new_sse
         log_sse.append(new_sse)
-        log_sse_diff.append(sse_diff)
         # progress stats
         t_elapsed = time.time()-t_start
         print(f'\rIteration: {i+1}/{max_iter} Status: - '
@@ -120,8 +127,10 @@ plt.plot(list(range(1,len(log_sse)+1)), log_sse)
 plt.ylabel('Sum of squared error (SSE)')
 plt.xlabel('Iteration')
 plt.title('FCM - Error Learning Logs')
-plt.savefig(f'./data/result/fcm_errorsize_embed_{size_embed}_with_{n_playlist}_playlists.png', bbox_inches='tight')
-# os.system('open ./data/result/fcm_error.png')
+plt.savefig(
+    path_root + path_fcm + 'sse loss.png',
+    bbox_inches='tight')
+# os.system('open /data/result/fcm_error.png')
 
 
 # Save cluster-100tracks

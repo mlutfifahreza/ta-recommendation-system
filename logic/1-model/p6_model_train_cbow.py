@@ -6,22 +6,28 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
 
+# From input arguments
+n_playlist = int(sys.argv[1])
+size_embed = int(sys.argv[2])
+learn_rate = float(sys.argv[3])
+n_epoch = int(sys.argv[4])
+
 # General Variables
 READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
 PROCESS_STRING = '\033[35m' + 'Process:' + '\033[0m'
-root_path = os.getcwd()
-
-# From input argv
-n_playlist = int(sys.argv[1])
-size_embed = int(sys.argv[2])
+path_root = os.getcwd()
+path_pop = f'/data/model/pop/playlist:{n_playlist}'
+path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
+path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
+path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
 
 # Getting labels -> convert to one hot encoding
 label_encoding = {}
-rel_path = '/data/data-training/track-count.csv'
-with open(root_path + rel_path) as csv_file:
+path_relative = path_pop + '/track-count.csv'
+with open(path_root + path_relative) as csv_file:
     # starting
-    print(READING_STRING, rel_path)
+    print(READING_STRING, path_relative)
     t_start = time.time()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
@@ -41,15 +47,15 @@ for key in label_encoding.keys():
 # Getting data training
 print(PROCESS_STRING, 'Getting data training')
 inputs, targets = [], []
-rel_path = '/data/data-training/playlists.csv'
-with open(root_path + rel_path) as csv_file:
+path_relative = '/data/data-training/playlists.csv'
+with open(path_root + path_relative) as csv_file:
     # starting
-    print(READING_STRING, rel_path)
+    print(READING_STRING, path_relative)
     t_start = time.time()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
-        track_ids = row['track_ids']
+        track_ids = row['track_ids'].split()
         for i in range(1, len(track_ids)-1):
             # add context of the label's neighbour as inputs
             inputs.append(np.concatenate((
@@ -64,73 +70,115 @@ n_data_train = len(inputs)
 print('n_data_train =', n_data_train)
 # Shuffle data training
 print(PROCESS_STRING, 'Shuffle data training')
-for i in range(10 * n_data_train):
+t_start = time.time()
+for i in range(100 * n_data_train):
     ran_1 = int(random.random()*n_data_train)
     ran_2 = int(random.random()*n_data_train)
     # swapping between index ran_1 and ran_2 
     inputs[ran_1], inputs[ran_2] = inputs[ran_2], inputs[ran_1]
     targets[ran_1], targets[ran_2] = targets[ran_2], targets[ran_1]
 # finishing
-inputs = np.array(inputs)
-targets = np.array(targets)
-print('inputs shape  =', inputs.shape)
-print('targets shape =', targets.shape)
+print(f'✅ {(time.time()-t_start):.3f}s')
+
 
 # Model CBOW
 print(PROCESS_STRING, 'Model CBOW Learning')
-learning_rate, n_epoch = 0.001, 5
+inputs = np.array(inputs)
+targets = np.array(targets)
 model = Sequential([
     InputLayer(input_shape=(inputs.shape[1]), name='input'),
     Dense(size_embed, activation='sigmoid', name='hidden'),
     Dense(targets.shape[1], activation='sigmoid', name='output')
 ])
+print(f'✅ Architecture set')
+print('ℹ️  Inputs shape  =', inputs.shape)
+print('ℹ️  Targets shape =', targets.shape)
+print('ℹ️  Learning rate =', learn_rate)
+print('ℹ️  Num of epoch  =', n_epoch)
+model.compile(
+    Adam(learn_rate),
+    loss='mse',
+    metrics=['accuracy', 'mse'])
+print(f'✅ Model compiled')
+history = model.fit(
+    x = inputs,
+    y = targets,
+    epochs = n_epoch,
+    verbose = 0,
+    validation_split= 1/9)
+print(f'✅ Learning done')
+
+# Creating saving directory path
+if not os.path.exists(path_root + path_cbow):
+    os.makedirs(path_root + path_cbow)
+
+# Save model architecture
 plot_model(
     model,
-    to_file = './data/result/cbow_arch.png',
+    to_file = path_root + path_cbow + '/cbow_arch.png',
     show_shapes = True,
     show_dtype = True,
     expand_nested = True,
     show_layer_names = True,
     show_layer_activations = True)
-model.compile(
-    Adam(learning_rate),
-    loss='mse',
-    metrics=['accuracy'])
-history = model.fit(
-    x = inputs,
-    y = targets,
-    epochs = n_epoch,
-    verbose = 1,
-    validation_split= 1/9)
 
-# summarize history for accuracy
+# # Save history : accuracy
+# plt.plot(history.history['accuracy'])
+# plt.plot(history.history['val_accuracy'])
+# plt.title(f'size embed: {size_embed}, {n_playlist}:playlists')
+# plt.ylabel('accuracy')
+# plt.xlabel('epoch')
+# plt.legend(['train', 'test'], loc='upper left')
+# path_save = path_root + path_cbow + '/accuracy.png'
+# print(EXPORT_STRING, path_save)
+# plt.savefig(path_save, bbox_inches='tight')
+# os.system(f'open {path_save}')
+
+# Save history : accuracy - train
+plt.clf()
 plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
+plt.title(f'size embed: {size_embed}, {n_playlist}:playlists')
+plt.ylabel('accuracy-train')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-save_path = f'./data/result/cbow_accuracy_size_embed_{size_embed}_with_{n_playlist}_playlists.png'
-plt.savefig(save_path, bbox_inches='tight')
-# os.system(f'open {save_path}')
+plt.legend(['train'], loc='upper left')
+path_save = path_root + path_cbow + '/accuracy-train.png'
+print(EXPORT_STRING, path_save)
+plt.savefig(path_save, bbox_inches='tight')
+os.system(f'open {path_save}')
 
-# summarize history for loss
+# Save history : accuracy - test
+plt.clf()
+plt.plot(history.history['val_accuracy'])
+plt.title(f'size embed: {size_embed}, {n_playlist}:playlists')
+plt.ylabel('accuracy-test')
+plt.xlabel('epoch')
+plt.legend(['test'], loc='upper left')
+path_save = path_root + path_cbow + '/accuracy-test.png'
+print(EXPORT_STRING, path_save)
+plt.savefig(path_save, bbox_inches='tight')
+os.system(f'open {path_save}')
+
+# Save history : loss
 plt.clf()
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
-plt.title('model loss')
+plt.title(f'model loss size embed: {size_embed}, {n_playlist}:playlists')
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
-save_path = f'./data/result/cbow_loss_size_embed_{size_embed}_with_{n_playlist}_playlists.png'
-plt.savefig(save_path, bbox_inches='tight')
-# os.system(f'open {save_path}')
+path_save = path_root + path_cbow + '/loss.png'
+print(EXPORT_STRING, path_save)
+plt.savefig(path_save, bbox_inches='tight')
+os.system(f'open {path_save}')
+
+# Save history : DONE
+print(f'✅ Model history saved')
 
 # Extract embeddings
-rel_path = '/data/result/cbow_embeddings.csv'
-with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
+path_relative = path_cbow + '/embeddings.csv'
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, rel_path)
+    print(EXPORT_STRING, path_relative)
     n_total = track_count
     n_done = 0
     t_start = time.time()

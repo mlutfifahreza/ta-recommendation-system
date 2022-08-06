@@ -1,20 +1,28 @@
 import os, csv, time, sys
 from nltk.corpus import wordnet
 
+# From input arguments
+n_playlist = int(sys.argv[1])
+size_embed = int(sys.argv[2])
+learn_rate = float(sys.argv[3])
+n_epoch = int(sys.argv[4])
+
 # General Variables
 READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
 PROCESS_STRING = '\033[35m' + 'Process:' + '\033[0m'
-root_path = os.getcwd()
+path_root = os.getcwd()
+path_pop = f'/data/model/pop/playlist:{n_playlist}'
+path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
+path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
+path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
+
+# Get token tracks list
 tokens = [] 
-PLAYLIST_TOTAL = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
-
-# Reading token_tracks.csv dataset
-rel_path = '/data/data-training/token-tracks.csv'
-
-with open(root_path + rel_path) as csv_file:
+path_relative = path_word_sim + '/token-tracks.csv'
+with open(path_root + path_relative) as csv_file:
     # starting
-    print(READING_STRING, rel_path)
+    print(READING_STRING, path_relative)
     n_done = 0
     t_start = time.time()
     # read and process
@@ -79,10 +87,10 @@ for i in range(n_total):
 print(f'\n✅ Finished: {time.time() - t_start:.3f}s')
 
 # Writing to token-20tokens.csv
-rel_path = '/data/data-training/token-20tokens.csv'
-with open(root_path + rel_path, 'w', encoding = 'UTF8', newline = '') as f:
+path_relative = path_word_sim  + '/token-20tokens.csv'
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, rel_path)
+    print(EXPORT_STRING, path_relative)
     t_start = time.time()
     writer = csv.writer(f)
     # write header

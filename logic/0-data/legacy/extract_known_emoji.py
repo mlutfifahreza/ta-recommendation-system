@@ -3,12 +3,12 @@ import os, csv, time, demoji, re
 # General Variables
 READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
-root_path = os.getcwd()
+path_root = os.getcwd()
 titles = {}
 
 # Reading titles.csv dataset
 csv_name = 'titles.csv'
-with open(root_path + '/data/data-all/' + csv_name) as csv_file:
+with open(path_root + '/data/data-all/' + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print('Please wait...', end='\r')
@@ -25,7 +25,7 @@ with open(root_path + '/data/data-all/' + csv_name) as csv_file:
 
 # Writing to known_emojis.csv
 csv_name = 'known_emojis.csv'
-with open(root_path + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
+with open(path_root + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, csv_name)
     print('Please wait...', end='\r')

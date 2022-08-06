@@ -4,29 +4,27 @@ import random
 # General Variables
 READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
-TIME_START = time.time()
-root_path = os.getcwd()
+path_root = os.getcwd()
 
-n_total = int(sys.argv[1]) if (len(sys.argv) > 1) else 200000
+n_playlist = n_total = int(sys.argv[1])
 n_done = n_train = n_test = 0
 r_train = 0.9
 r_test = 0.1
 n_total_train = n_total * r_train
 n_total_test = n_total * r_test
 
-path_train =  root_path + '/data/data-training/playlists.csv'
-path_test = root_path + '/data/data-testing/playlists.csv'
 
 def write_split_data(path, playlist):
     with open(path, 'a+', encoding = 'UTF8', newline = '') as f:
         csv.writer(f).writerow(playlist)
 
 # Reading playlists.csv dataset
-rel_path = '/data/data-all/playlists.csv'
-
-with open(root_path + rel_path) as csv_file:
+path_relative = '/data/data-all/playlists.csv'
+path_train =  path_root + '/data/data-training/playlists.csv'
+path_test = path_root + '/data/data-testing/playlists.csv'
+with open(path_root + path_relative) as csv_file:
     # starting
-    print(READING_STRING, rel_path)
+    print(READING_STRING, path_relative)
     t_start = time.time()
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
