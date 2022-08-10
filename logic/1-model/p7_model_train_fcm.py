@@ -7,7 +7,7 @@ n_playlist = int(sys.argv[1])
 size_embed = int(sys.argv[2])
 learn_rate = float(sys.argv[3])
 n_epoch = int(sys.argv[4])
-n_cluster = int(sys.argv[5])
+div_cluster = int(sys.argv[5])
 
 # General Variables
 READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
@@ -17,20 +17,13 @@ path_root = os.getcwd()
 path_pop = f'/data/model/pop/playlist:{n_playlist}'
 path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
 path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
-path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
+path_fcm = f'/data/model/fcm/embed:{size_embed}-playlist:{n_playlist}'
 
-# FCM: helper functions
 def square_dist(x, y):
     return np.sum(np.square(x - y))
 
-def SSE(weights, inputs, centroids, p = 1.75):
-    sse = 0
-    for k in range(n_clusters):
-        for i in range(n_data):
-            sse += (weights[i,k] ** p) * square_dist(inputs[i], centroids[k])
-    return sse
-
 def get_centroids(weights, inputs, p = 1.75):
+    n_dimension = inputs.shape[1]
     centroids = np.zeros((n_clusters, n_dimension))
     for k in range(n_clusters):
         denom = 0
@@ -43,6 +36,7 @@ def get_centroids(weights, inputs, p = 1.75):
     return centroids
 
 def update_weights(weights, inputs, centroids, p = 1.75):
+    n_dimension = inputs.shape[1]
     new_weights = np.copy(weights)
     for k in range(n_clusters):
         for i in range(n_data):
@@ -59,6 +53,13 @@ def update_weights(weights, inputs, centroids, p = 1.75):
             new_weights[i,k] = num/denom
     return new_weights
 
+def SSE(weights, inputs, centroids, p = 1.75):
+    sse = 0
+    for k in range(n_clusters):
+        for i in range(n_data):
+            sse += (weights[i,k] ** p) * square_dist(inputs[i], centroids[k])
+    return sse
+
 # FCM: init inputs
 # Getting embedding as inputs
 inputs = []
@@ -66,7 +67,7 @@ path_relative =  path_cbow + '/embeddings.csv'
 with open(path_root + path_relative) as csv_file:
     # starting
     print(READING_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
@@ -74,17 +75,14 @@ with open(path_root + path_relative) as csv_file:
         inputs.append(np.array(embed))
     # finishing
     inputs = np.array(inputs)
-    print(f'✅ Finished: {time.time()-t_start:.3f}s')
-print('ℹ️  inputs.shape =', inputs.shape)
-print('ℹ️  example:', list(inputs[20]))
+    print(f'✅ Finished: {time.perf_counter()-t_start:.3f}s')
 
 # FCM: variables update
 n_data = inputs.shape[0]
-n_clusters = n_data//200
-n_dimension = inputs.shape[1]
+n_clusters = n_data//div_cluster
 fuzzy_param = 1.8
 max_iter = 20
-threshold = 1e-8
+threshold = 1e-6
 
 # FCM: init weights, centroids
 weights = np.random.rand(n_data, n_clusters)
@@ -100,7 +98,7 @@ log_sse = []
 last_sse = float('inf')
 for i in range(max_iter):
     # For progress checking
-    t_start = time.time()
+    t_start = time.perf_counter()
     print(f'Iteration: {i+1}/{max_iter} Status: computing...', end ='\r')
     # learn
     new_centroids = get_centroids(weights, inputs, fuzzy_param)
@@ -113,12 +111,29 @@ for i in range(max_iter):
         last_sse = new_sse
         log_sse.append(new_sse)
         # progress stats
-        t_elapsed = time.time()-t_start
+        t_elapsed = time.perf_counter()-t_start
         print(f'\rIteration: {i+1}/{max_iter} Status: - '
             + f'Elapsed = {t_elapsed:.3f}s E = {new_sse} dE = {sse_diff}')
-    else:
-        print(f'\rIteration: {i+1}/{max_iter} Status: stopping, change of error < threshold')
+    elif sse_diff > 0:
+        weights = new_weights
+        centroids = new_centroids
+        last_sse = new_sse
+        log_sse.append(new_sse)
+        # progress stats
+        t_elapsed = time.perf_counter()-t_start
+        print(f'\rIteration: {i+1}/{max_iter} Status: - '
+            + f'Elapsed = {t_elapsed:.3f}s E = {new_sse} dE = {sse_diff}'
+            + f'\nStopping: 0 < change of error < threshold')
         break
+    else:
+        print(f'\tIteration: {i+1}/{max_iter} Status: - '
+            + f'Stopping: change of error < 0')
+        break
+
+# Creating saving directory path
+if not os.path.exists(path_root + path_fcm):
+    os.makedirs(path_root + path_fcm)
+
 # Save learning logs
 print('sse =')
 for sse in log_sse:
@@ -127,10 +142,88 @@ plt.plot(list(range(1,len(log_sse)+1)), log_sse)
 plt.ylabel('Sum of squared error (SSE)')
 plt.xlabel('Iteration')
 plt.title('FCM - Error Learning Logs')
+path_save = path_root + path_fcm + '/sse_loss.png'
 plt.savefig(
-    path_root + path_fcm + 'sse loss.png',
+    path_save,
     bbox_inches='tight')
-# os.system('open /data/result/fcm_error.png')
+os.system('open ' + f'{path_save}'.replace(' ','\ '))
+
+# Save track-cluster
+header =  ['track_index', 'cluster_memval']
+# clusters_10 = '{cluster_index}:{mem_value}'
+path_relative = path_fcm + '/track-cluster.csv'
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+    # starting
+    print(EXPORT_STRING, path_relative)
+    t_start = time.perf_counter()
+    writer = csv.writer(f)
+    # write header
+    writer.writerow(header)
+    # write content
+    for i in range(n_data):
+        memvals = []
+        for j in range(n_clusters):
+            memvals.append((j, weights[i,j]))
+        memvals = np.array(
+            memvals,
+            dtype=[('cluster_index', np.int32), ('memval', np.float32)])
+        memvals[::-1].sort(order='memval')
+        memvals.resize(10)
+        memvals = [f'{index}:{memval}' for index, memval in memvals]
+        writer.writerow([j, ' '.join(memvals)])
+    # finishing
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 
 # Save cluster-100tracks
+header =  ['cluster_index', 'track_100']
+# track_100 = '{index}:{mem_value}'
+path_relative = path_fcm + '/cluster-100tracks.csv'
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+    # starting
+    print(EXPORT_STRING, path_relative)
+    t_start = time.perf_counter()
+    writer = csv.writer(f)
+    # write header
+    writer.writerow(header)
+    # write content
+    for j in range(n_clusters):
+        memvals = []
+        for i in range(n_data):
+            memvals.append((i, weights[i,j]))
+        memvals = np.array(
+            memvals, 
+            dtype=[('track_index', np.int32), ('memval', np.float32)])
+        memvals[::-1].sort(order='memval')
+        memvals.resize(100)
+        memvals = [f'{index}:{memval}' for index, memval in memvals]
+        writer.writerow([j, ' '.join(memvals)])
+    # finishing
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
+
+# Save weights
+path_relative = path_fcm + '/weights.csv'
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+    # starting
+    print(EXPORT_STRING, path_relative)
+    t_start = time.perf_counter()
+    writer = csv.writer(f)
+    # write content
+    for w in weights:
+        writer.writerow(w)
+    # finishing
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
+
+# Save sorted weights
+path_relative = path_fcm + '/sorted_weights.csv'
+with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+    # starting
+    print(EXPORT_STRING, path_relative)
+    t_start = time.perf_counter()
+    writer = csv.writer(f)
+    # write content
+    for w in weights:
+        sorted_weights = np.sort(w)
+        writer.writerow(sorted_weights)
+    # finishing
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
