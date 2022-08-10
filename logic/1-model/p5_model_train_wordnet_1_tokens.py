@@ -24,7 +24,7 @@ with open(path_root + path_relative) as csv_file:
     print(READING_STRING, path_relative)
     n_total = int(n_playlist * 0.9)
     n_done = 0
-    t_start = time.time()
+    t_start = time.perf_counter()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
@@ -37,12 +37,12 @@ with open(path_root + path_relative) as csv_file:
             else: token_tracks[token] = track_ids
         # progress stats
         n_done += 1
-        t_elapsed = time.time()-t_start
+        t_elapsed = time.perf_counter()-t_start
         t_remaining = (n_total-n_done)/n_done * t_elapsed
-        print(f'\rProgress: {n_done}/{n_total} '
+        print(f'\r🟡 Progress: {n_done}/{n_total} '
             + f'Elapsed: {t_elapsed:.3f}s '
             + f'Remaining: {t_remaining:.3f}s', end = ' ')
-    print(f'\n✅ Finished: {time.time() - t_start:.3f}s')
+    print(f'\n✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # Creating saving directory path
 path_dir = f'/data/model/word_sim/playlist:{n_playlist}'
@@ -54,7 +54,7 @@ path_relative = path_dir + '/token-tracks.csv'
 with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     writer = csv.writer(f)
     # write header
     header = ['token','track_ids']
@@ -62,8 +62,8 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # write content
     for key, value in token_tracks.items():
         writer.writerow([key, ' '.join(value)])
-    t_elapsed = '{:.2f}'.format(time.time()-t_start)
-    print(f'✅ Finished: {time.time() - t_start:.3f}s')
+    t_elapsed = '{:.3f}'.format(time.perf_counter()-t_start)
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # Finishing
-print('ℹ️  Unique tokens:', len(token_tracks))
+print('   - Unique tokens:', len(token_tracks))

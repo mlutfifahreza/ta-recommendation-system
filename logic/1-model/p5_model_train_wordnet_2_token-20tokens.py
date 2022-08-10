@@ -24,7 +24,7 @@ with open(path_root + path_relative) as csv_file:
     # starting
     print(READING_STRING, path_relative)
     n_done = 0
-    t_start = time.time()
+    t_start = time.perf_counter()
     # read and process
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
@@ -34,15 +34,15 @@ with open(path_root + path_relative) as csv_file:
             tokens.append(str(row[0]))
             # progress stats
             n_done += 1
-            print(f'\rProcessed: {n_done} - Elapsed: {time.time()-t_start:.3f}', end =' ')
-    print(f'\n✅ Finished: {time.time() - t_start:.3f}s')
+            print(f'\rProcessed: {n_done} - Elapsed: {time.perf_counter()-t_start:.3f}', end =' ')
+    print(f'\n✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # LEARN: Generating token-20tokens
 print(PROCESS_STRING, 'Generating token-20tokens')
 similarities = {}
 n_done = 0
 n_total = len(tokens)
-t_start = time.time()
+t_start = time.perf_counter()
 for i in range(n_total):
     # starting
     token_1 = tokens[i]
@@ -79,19 +79,19 @@ for i in range(n_total):
         similarities[token_1].append(similarity_with_token2)
     # progress stats
     n_done += 1
-    t_elapsed = time.time()-t_start
+    t_elapsed = time.perf_counter()-t_start
     t_remaining = (n_total-n_done)/n_done * t_elapsed
-    print(f'\rProgress: {n_done}/{n_total} '
+    print(f'\r🟡 Progress: {n_done}/{n_total} '
         + f'Elapsed: {t_elapsed:.3f}s '
         + f'Remaining: {t_remaining:.3f}s', end = ' ')
-print(f'\n✅ Finished: {time.time() - t_start:.3f}s')
+print(f'\n✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # Writing to token-20tokens.csv
 path_relative = path_word_sim  + '/token-20tokens.csv'
 with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     writer = csv.writer(f)
     # write header
     header = ['token', '20tokens']
@@ -111,4 +111,4 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
         if len(top20) > 1:
             writer.writerow([token, top20])
     # progress
-    print(f'✅ Finished: {time.time() - t_start:.3f}s')
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')

@@ -22,13 +22,13 @@ path_relative = path_pop + '/track-count.csv'
 with open(path_root + path_relative) as csv_file:
     # starting
     print(READING_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
         track_count[row['track_id']] = int(row['count'])
     # Finished
-    print(f'✅ Finished: {time.time() - t_start:.3f}s')
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # Reading token_tracks.csv dataset
 token_tracks = {} # key = token, value = list of [track_id, count]
@@ -37,7 +37,7 @@ with open(path_root + path_relative) as csv_file:
     # starting
     print(READING_STRING, path_relative)
     n_done = 0
-    t_start = time.time()
+    t_start = time.perf_counter()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
@@ -52,14 +52,14 @@ with open(path_root + path_relative) as csv_file:
         # trim to first 50 only
         token_tracks[token] = token_tracks[token][:50]
     # finishing
-    print(f'✅ Finished: {time.time() - t_start:.3f}s')
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # Writing to token-50tracks.csv
 path_relative = path_word_sim + '/token-50tracks.csv'
 with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     writer = csv.writer(f)
     # write header
     header = ['token', '50tracks']
@@ -71,5 +71,5 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
             track_ids += value[0] + ' '
         writer.writerow([token, track_ids])
     # Finished
-    print(f'✅ Finished: {time.time() - t_start:.3f}s')
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
 

@@ -23,7 +23,7 @@ track_count = {}
 with open(path_root + path_relative) as csv_file:
     # starting
     print(READING_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     # read and process
     csv_reader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_reader:
@@ -31,7 +31,7 @@ with open(path_root + path_relative) as csv_file:
             if id in track_count: track_count[id] += 1
             else: track_count[id] = 1
     # Finished
-    print(f'✅ Finished: {time.time() - t_start:.3f}s')
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # Convert to list
 track_count_list = []
@@ -49,7 +49,7 @@ path_relative = path_pop + '/track-count.csv'
 with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     writer = csv.writer(f)
     # write header
     header = ['track_id', 'count']
@@ -58,9 +58,9 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     for item in track_count_list:
         writer.writerow(item)
     # finishing
-    print(f'✅ Finished: {time.time() - t_start:.3f}s')
+    print(f'✅ Finished: {time.perf_counter() - t_start:.3f}s')
 
 # Finishing
-print('ℹ️  Tracks count :', len(track_count_list))
-print('ℹ️  Max count    :', track_count_list[0][1])
-print('ℹ️  Min count    :', track_count_list[-1][1])
+print('   - Tracks count :', len(track_count_list))
+print('   - Max count    :', track_count_list[0][1])
+print('   - Min count    :', track_count_list[-1][1])
