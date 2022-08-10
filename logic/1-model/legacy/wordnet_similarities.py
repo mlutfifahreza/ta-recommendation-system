@@ -97,6 +97,6 @@ for i in range(len(tokens)):
         # print()
         for key, value in sim_result_list.items():
             if value > 10000: print('BIG', end = '\t')
-            else: print('{:.2f}'.format(value), end = '\t')
+            else: print('{:.3f}'.format(value), end = '\t')
         print()
     print()

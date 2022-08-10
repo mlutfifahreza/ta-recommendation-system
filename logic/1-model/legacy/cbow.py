@@ -32,7 +32,7 @@ def train(size_embed = 6):
         # starting
         print(READING_STRING, csv_name)
         print('Please wait...', end='\r')
-        TIME_START = time.time()
+        TIME_START = time.perf_counter()
         # read and process
         csv_reader = csv.reader(csv_file, delimiter=',')
         is_at_header = True
@@ -40,7 +40,7 @@ def train(size_embed = 6):
             if is_at_header: is_at_header = False
             else: label_encoding[row[0]] = None
         # finishing
-        print('in {:.2f}s'.format(time.time()-TIME_START))
+        print('in {:.3f}s'.format(time.perf_counter()-TIME_START))
     
     # Get one hot encoding
     track_count = len(label_encoding)
@@ -61,7 +61,7 @@ def train(size_embed = 6):
         # starting
         print(READING_STRING, csv_name)
         print('Please wait...', end='\r')
-        TIME_START = time.time()
+        TIME_START = time.perf_counter()
         # read and process
         csv_reader = csv.reader(csv_file, delimiter=',')
         is_at_header = True
@@ -76,7 +76,7 @@ def train(size_embed = 6):
                     inputs.append(data_input.copy())
                     targets.append(data_target.copy())
         # finishing
-        print('in {:.2f}s'.format(time.time()-TIME_START))
+        print('in {:.3f}s'.format(time.perf_counter()-TIME_START))
     
     # TODO: Getting data validation
 
