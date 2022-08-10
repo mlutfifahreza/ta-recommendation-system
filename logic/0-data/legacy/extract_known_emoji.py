@@ -12,7 +12,7 @@ with open(path_root + '/data/data-all/' + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print('Please wait...', end='\r')
-    start_time = time.time()
+    start_time = time.perf_counter()
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
     for row in csv_reader:
@@ -20,7 +20,7 @@ with open(path_root + '/data/data-all/' + csv_name) as csv_file:
             is_at_header = False
         else:
             titles[row[0]] = 1
-    time_elapsed = '{:.2f}'.format(time.time()-start_time)
+    time_elapsed = '{:.3f}'.format(time.perf_counter()-start_time)
     print(f'in {time_elapsed}s\n')
 
 # Writing to known_emojis.csv
@@ -29,7 +29,7 @@ with open(path_root + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newl
     # starting
     print(EXPORT_STRING, csv_name)
     print('Please wait...', end='\r')
-    start_time = time.time()
+    start_time = time.perf_counter()
     writer = csv.writer(f)
     # write header
     header = ['emoji','mapping']
@@ -43,5 +43,5 @@ with open(path_root + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newl
         mapping = re.sub(r'([^\w\s])', '', value)
         mapping = re.sub(r'((\w+)\s+skin tone)|(face)|(flag)|(hand)', '', mapping).strip()
         writer.writerow([key, mapping])
-    time_elapsed = '{:.2f}'.format(time.time()-start_time)
+    time_elapsed = '{:.3f}'.format(time.perf_counter()-start_time)
     print(f'in {time_elapsed}s\n')

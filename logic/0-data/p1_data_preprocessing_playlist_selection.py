@@ -32,7 +32,7 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     n_processed = 0
     n_to_process = int(sys.argv[1]) if len(sys.argv) > 1 else 200000
-    t_start = time.time()
+    t_start = time.perf_counter()
     print(EXPORT_STRING, path_relative)
     writer = csv.writer(f)
     # write header
@@ -73,14 +73,14 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
                 ])
                 # progress stats
                 n_processed += 1
-                t_elapsed = time.time()-t_start
+                t_elapsed = time.perf_counter()-t_start
                 t_remaining = (n_to_process-n_processed)/n_processed * t_elapsed
-                print(f'\rProgress: {n_processed}/{n_to_process} '
+                print(f'\r🟡 Progress: {n_processed}/{n_to_process} '
                 + f'Elapsed: {t_elapsed:.3f}s '
                 + f'Remaining: {t_remaining:.3f}s', end = ' ')
         # break condition
         if (n_processed == n_to_process): break
-    print(f'\n✅ Finished: {time.time()-t_start:.3f}s')
+    print(f'\n✅ Finished: {time.perf_counter()-t_start:.3f}s')
 
 # Writing tracks.csv sort by id
 path_relative = '/data/data-all/tracks.csv'
@@ -89,7 +89,7 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_STRING, path_relative)
     writer = csv.writer(f)
-    t_start = time.time()
+    t_start = time.perf_counter()
     # write header
     header = ['track_id','track_name','artist_id','artist_name']
     writer.writerow(header)
@@ -104,7 +104,7 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
             track['artist_name'],
         ])
     # ending
-    print(f'✅ Finished: {time.time()-t_start:.3f}s')
+    print(f'✅ Finished: {time.perf_counter()-t_start:.3f}s')
 
 # Finishing
-print('ℹ️  Unique tracks:', len(tracks))
+print('   - Unique tracks:', len(tracks))

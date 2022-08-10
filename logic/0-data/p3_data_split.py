@@ -25,7 +25,7 @@ path_test = path_root + '/data/data-testing/playlists.csv'
 with open(path_root + path_relative) as csv_file:
     # starting
     print(READING_STRING, path_relative)
-    t_start = time.time()
+    t_start = time.perf_counter()
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
     for row in csv_reader:
@@ -48,16 +48,16 @@ with open(path_root + path_relative) as csv_file:
                 n_train += 1
             n_done += 1
             # Progress stats
-            t_elapsed = time.time()-t_start
+            t_elapsed = time.perf_counter()-t_start
             t_remaining = (n_total-n_done)/n_done * t_elapsed
-            print(f'\rProgress: {n_done}/{n_total} '
+            print(f'\r🟡 Progress: {n_done}/{n_total} '
                 + f'Elapsed: {t_elapsed:.3f}s '
                 + f'Remaining: {t_remaining:.3f}s', end = ' ')
     # Finishing
     print()
-    print(f'✅ Finished {time.time()-t_start:.3f}s')
+    print(f'✅ Finished {time.perf_counter()-t_start:.3f}s')
 
 # Finishing
-print('ℹ️  All Playlist :', n_done)
-print('ℹ️  Training     :', n_train)
-print('ℹ️  Testing      :', n_test)
+print('   - All Playlist :', n_done)
+print('   - Training     :', n_train)
+print('   - Testing      :', n_test)

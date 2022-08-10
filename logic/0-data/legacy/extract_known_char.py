@@ -12,7 +12,7 @@ with open(path_root + '/data/data-all/' + csv_name) as csv_file:
     # starting
     print(READING_STRING, csv_name)
     print('Please wait...', end='\r')
-    start_time = time.time()
+    start_time = time.perf_counter()
     csv_reader = csv.reader(csv_file, delimiter=',')
     is_at_header = True
     for row in csv_reader:
@@ -22,7 +22,7 @@ with open(path_root + '/data/data-all/' + csv_name) as csv_file:
             for ch in title:
                 chars[ch] = None
                 # if not(re.match(r'[0-9a-zA-Z]', ch)): chars[ch] = None
-    time_elapsed = '{:.2f}'.format(time.time()-start_time)
+    time_elapsed = '{:.3f}'.format(time.perf_counter()-start_time)
     print(f'in {time_elapsed}s')
 
 # Writing to known_characters.csv
@@ -31,7 +31,7 @@ with open(path_root + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newl
     # starting
     print(EXPORT_STRING, csv_name)
     print('Please wait...', end='\r')
-    start_time = time.time()
+    start_time = time.perf_counter()
     writer = csv.writer(f)
     # write header
     header = ['character']
@@ -41,5 +41,5 @@ with open(path_root + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newl
     total = len(chars)
     for ch in sorted_chars:
         writer.writerow([ch])
-    time_elapsed = '{:.2f}'.format(time.time()-start_time)
+    time_elapsed = '{:.3f}'.format(time.perf_counter()-start_time)
     print(f'in {time_elapsed}s')
