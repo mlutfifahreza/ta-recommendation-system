@@ -1,8 +1,8 @@
 import os, csv, time, demoji, re
 
 # General Variables
-READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
-EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
+READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
+EXPORT_FORMAT = '\033[92m' + 'Export:' + '\033[0m'
 path_root = os.getcwd()
 titles = {}
 
@@ -10,7 +10,7 @@ titles = {}
 csv_name = 'titles.csv'
 with open(path_root + '/data/data-all/' + csv_name) as csv_file:
     # starting
-    print(READING_STRING, csv_name)
+    print(READING_FORMAT, csv_name)
     print('Please wait...', end='\r')
     start_time = time.perf_counter()
     csv_reader = csv.reader(csv_file, delimiter=',')
@@ -27,7 +27,7 @@ with open(path_root + '/data/data-all/' + csv_name) as csv_file:
 csv_name = 'known_emojis.csv'
 with open(path_root + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, csv_name)
+    print(EXPORT_FORMAT, csv_name)
     print('Please wait...', end='\r')
     start_time = time.perf_counter()
     writer = csv.writer(f)

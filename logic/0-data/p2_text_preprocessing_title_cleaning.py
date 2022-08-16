@@ -11,7 +11,7 @@ def clean(raw_title, characters_mapping):
     emojis = demoji.findall(processed_title)
     for key, value in emojis.items():
         mapping = re.sub(r'((\w+)\s+skin tone)|(face)|(flag)|(hand)', ' ', value)
-        processed_title = processed_title.replace(key, ' '+mapping+' ')
+        processed_title = processed_title.replace(key, f' {mapping} ')
     
     # normalization 1: convert special characters
     for key,value in characters_mapping.items():
@@ -35,11 +35,9 @@ def clean(raw_title, characters_mapping):
     stop_words = set(stopwords.words('english'))
     filtered_words = []
     for word in word_tokens:
-        if (
-            word not in stop_words
+        if (word not in stop_words
             and len(word) > 1
-        ):
-            filtered_words.append(word)
+        ): filtered_words.append(word)
 
     # lemmatization
     lemmatizer = WordNetLemmatizer()
