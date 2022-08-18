@@ -7,8 +7,8 @@ import pandas as pd
 from math import exp
 
 # General Variables
-READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
-EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
+READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
+EXPORT_FORMAT = '\033[92m' + 'Export:' + '\033[0m'
 path_root = os.getcwd()
 
 def sigmoid(x):
@@ -28,13 +28,13 @@ def train(size_embed = 6):
     label_encoding = {}
     # read track_count.csv dataset
     csv_name = 'track_count.csv'
-    with open(path_root + '/data/data-training/' + csv_name) as csv_file:
+    with open('data/data-training/' + csv_name) as csv_file:
         # starting
-        print(READING_STRING, csv_name)
+        print(READING_FORMAT, csv_name)
         print('Please wait...', end='\r')
         TIME_START = time.perf_counter()
         # read and process
-        csv_reader = csv.reader(csv_file, delimiter=',')
+        csv_reader = csv.reader(csv_file)
         is_at_header = True
         for row in csv_reader:
             if is_at_header: is_at_header = False
@@ -57,13 +57,13 @@ def train(size_embed = 6):
     targets = []
     # read playlists.csv dataset
     csv_name = 'playlists.csv'
-    with open(path_root + '/data/data-training/' + csv_name) as csv_file:
+    with open('data/data-training/' + csv_name) as csv_file:
         # starting
-        print(READING_STRING, csv_name)
+        print(READING_FORMAT, csv_name)
         print('Please wait...', end='\r')
         TIME_START = time.perf_counter()
         # read and process
-        csv_reader = csv.reader(csv_file, delimiter=',')
+        csv_reader = csv.reader(csv_file)
         is_at_header = True
         for row in csv_reader:
             if is_at_header: is_at_header = False

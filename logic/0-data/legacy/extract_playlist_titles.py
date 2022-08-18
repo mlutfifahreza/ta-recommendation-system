@@ -8,12 +8,12 @@ titles = {}
 
 # Reading playlists.csv dataset
 csv_name = 'playlists.csv'
-with open(path_root + '/data/data-all/' + csv_name) as csv_file:
+with open('data/data-all/' + csv_name) as csv_file:
     # starting
     print(READING_FORMAT, csv_name)
     print('Please wait...', end='\r')
     start_time = time.perf_counter()
-    csv_reader = csv.reader(csv_file, delimiter=',')
+    csv_reader = csv.reader(csv_file)
     is_at_header = True
     for row in csv_reader:
         if is_at_header:
@@ -25,7 +25,7 @@ with open(path_root + '/data/data-all/' + csv_name) as csv_file:
 
 # Writing to titles.csv
 csv_name = 'titles.csv'
-with open(path_root + '/data/data-all/' + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
+with open('data/data-all/' + csv_name, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     print(EXPORT_FORMAT, csv_name)
     print('Please wait...', end='\r')

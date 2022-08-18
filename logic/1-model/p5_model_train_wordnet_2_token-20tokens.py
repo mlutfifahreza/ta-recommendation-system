@@ -1,32 +1,40 @@
-import os, csv, time, sys
+import os, csv, time, sys, json
 from nltk.corpus import wordnet
 
-# From input arguments
-n_playlist = int(sys.argv[1])
-size_embed = int(sys.argv[2])
-learn_rate = float(sys.argv[3])
-n_epoch = int(sys.argv[4])
+# String formatting
+READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
+EXPORT_FORMAT = '\033[92m' + 'Export:' + '\033[0m'
+PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
 
-# General Variables
-READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
-EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
-PROCESS_STRING = '\033[35m' + 'Process:' + '\033[0m'
-path_root = os.getcwd()
-path_pop = f'/data/model/pop/playlist:{n_playlist}'
-path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
-path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
-path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
+# Parameters
+params = json.load(open('parameters.json'))
+n_playlist = params['n_playlist']
+n_vocab = params['n_vocab']
+n_data_train = params['n_data_train']
+n_data_batch = params['n_data_batch']
+size_embed = params['size_embed']
+learn_rate = params['learn_rate']
+n_epoch = params['n_epoch']
+
+# Paths
+path_pop = f'data/model/pop/playlist={n_playlist}'
+path_word_sim = f'data/model/word_sim/playlist={n_playlist}'
+path_vector = f'data/model/vector/embed={size_embed}-playlist={n_playlist}-rate={learn_rate}'
+path_fcm = f'data/model/fcm/embed={size_embed}-playlist={n_playlist}'
+
+csv.field_size_limit(sys.maxsize)
 
 # Get token tracks list
+print(PROCESS_FORMAT, 'Get token tracks list')
 tokens = [] 
-path_relative = path_word_sim + '/token-tracks.csv'
-with open(path_root + path_relative) as csv_file:
+path_csv = path_word_sim + '/token-tracks.csv'
+with open(path_csv) as csv_file:
     # starting
-    print(READING_STRING, path_relative)
+    print(READING_FORMAT, path_csv)
     n_done = 0
     t_start = time.perf_counter()
     # read and process
-    csv_reader = csv.reader(csv_file, delimiter=',')
+    csv_reader = csv.reader(csv_file)
     is_at_header = True
     for row in csv_reader:
         if is_at_header: is_at_header = False
@@ -34,11 +42,16 @@ with open(path_root + path_relative) as csv_file:
             tokens.append(str(row[0]))
             # progress stats
             n_done += 1
-            print(f'\rProcessed: {n_done} - Elapsed: {time.perf_counter()-t_start:.3f}', end =' ')
-    print(f'\n✅ Finished: {time.perf_counter() - t_start:.3f}s')
+            t_elapsed = time.perf_counter()-t_start
+            print(f'\r🟡 Done: {n_done} '
+                + f'Elapsed: {t_elapsed:.3f}s '
+                , end = ' ')
+    print(f'\r✅ Done: {n_done} '
+        + f'Elapsed: {t_elapsed:.3f}s'
+        + ' '*20)
 
 # LEARN: Generating token-20tokens
-print(PROCESS_STRING, 'Generating token-20tokens')
+print(PROCESS_FORMAT, 'Generate token-20tokens')
 similarities = {}
 n_done = 0
 n_total = len(tokens)
@@ -81,16 +94,18 @@ for i in range(n_total):
     n_done += 1
     t_elapsed = time.perf_counter()-t_start
     t_remaining = (n_total-n_done)/n_done * t_elapsed
-    print(f'\r🟡 Progress: {n_done}/{n_total} '
+    print(f'\r🟡 Done: {n_done}/{n_total} '
         + f'Elapsed: {t_elapsed:.3f}s '
-        + f'Remaining: {t_remaining:.3f}s', end = ' ')
-print(f'\n✅ Finished: {time.perf_counter() - t_start:.3f}s')
+        + f'ETA: {t_remaining:.3f}s', end = ' ')
+print(f'\r✅ Done: {n_done}/{n_total} - '
+        + f'Elapsed: {t_elapsed:.3f}s'
+        + ' '*20)
 
 # Writing to token-20tokens.csv
-path_relative = path_word_sim  + '/token-20tokens.csv'
-with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+path_csv = path_word_sim  + '/token-20tokens.csv'
+with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, path_relative)
+    print(EXPORT_FORMAT, path_csv)
     t_start = time.perf_counter()
     writer = csv.writer(f)
     # write header

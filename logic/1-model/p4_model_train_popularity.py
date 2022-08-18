@@ -1,31 +1,37 @@
-import os, csv, time, sys
+import os, csv, time, json
 
-# From input arguments
-n_playlist = int(sys.argv[1])
-size_embed = int(sys.argv[2])
-learn_rate = float(sys.argv[3])
-n_epoch = int(sys.argv[4])
+# String formatting
+READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
+EXPORT_FORMAT = '\033[92m' + 'Export:' + '\033[0m'
+PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
 
-# General Variables
-READING_STRING = '\033[94m' + 'Reading:' + '\033[0m'
-EXPORT_STRING = '\033[92m' + 'Export:' + '\033[0m'
-PROCESS_STRING = '\033[35m' + 'Process:' + '\033[0m'
-path_root = os.getcwd()
-path_pop = f'/data/model/pop/playlist:{n_playlist}'
-path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
-path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
-path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
+# Parameters
+params = json.load(open('parameters.json'))
+n_playlist = params['n_playlist']
+n_vocab = params['n_vocab']
+n_data_train = params['n_data_train']
+n_data_batch = params['n_data_batch']
+size_embed = params['size_embed']
+learn_rate = params['learn_rate']
+n_epoch = params['n_epoch']
+
+# Paths
+path_pop = f'data/model/pop/playlist={n_playlist}'
+path_word_sim = f'data/model/word_sim/playlist={n_playlist}'
+path_vector = f'data/model/vector/embed={size_embed}-playlist={n_playlist}-rate={learn_rate}'
+path_fcm = f'data/model/fcm/embed={size_embed}-playlist={n_playlist}'
 
 # Reading playlists.csv dataset
+print(PROCESS_FORMAT, "Reading playlists data train")
 track_count = []
-path_relative = '/data/data-training/playlists.csv'
+path_csv = 'data/data-training/playlists.csv'
 track_count = {}
-with open(path_root + path_relative) as csv_file:
+with open(path_csv) as csv_file:
     # starting
-    print(READING_STRING, path_relative)
+    print(READING_FORMAT, path_csv)
     t_start = time.perf_counter()
     # read and process
-    csv_reader = csv.DictReader(csv_file, delimiter=',')
+    csv_reader = csv.DictReader(csv_file)
     for row in csv_reader:
         for id in row['track_ids'].split():
             if id in track_count: track_count[id] += 1
@@ -41,14 +47,15 @@ for k,v in track_count.items():
 track_count_list.sort(key=lambda row: (row[1]), reverse=True)
 
 # Creating saving directory path
-if not os.path.exists(path_root + path_pop):
-    os.makedirs(path_root + path_pop)
+if not os.path.exists(path_pop):
+    os.makedirs(path_pop)
 
 # Writing to track_count.csv
-path_relative = path_pop + '/track-count.csv'
-with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+print(PROCESS_FORMAT, "Export popular tracks")
+path_csv = path_pop + '/track-count.csv'
+with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_STRING, path_relative)
+    print(EXPORT_FORMAT, path_csv)
     t_start = time.perf_counter()
     writer = csv.writer(f)
     # write header

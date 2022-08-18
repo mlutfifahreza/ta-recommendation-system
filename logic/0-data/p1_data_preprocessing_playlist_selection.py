@@ -2,24 +2,31 @@ import os, json, csv, time, sys
 from operator import itemgetter
 import p2_text_preprocessing_title_cleaning as text_preprocess
 
-# Template variables
-n_playlist = int(sys.argv[1])
-size_embed = int(sys.argv[2])
-learn_rate = float(sys.argv[3])
-n_epoch = int(sys.argv[4])
+# String formatting
 READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_FORMAT = '\033[92m' + 'Export:' + '\033[0m'
-PROCESS_FORMAT = '\033[35m' + 'Process:' + '\033[0m'
-path_root = os.getcwd()
-path_pop = f'/data/model/pop/playlist:{n_playlist}'
-path_word_sim = f'/data/model/word_sim/playlist:{n_playlist}'
-path_cbow = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}-rate:{learn_rate}'
-path_fcm = f'/data/model/cbow/embed:{size_embed}-playlist:{n_playlist}'
+PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
+
+# Parameters
+params = json.load(open('parameters.json'))
+n_playlist = params['n_playlist']
+n_vocab = params['n_vocab']
+n_data_train = params['n_data_train']
+n_data_batch = params['n_data_batch']
+size_embed = params['size_embed']
+learn_rate = params['learn_rate']
+n_epoch = params['n_epoch']
+
+# Paths
+path_pop = f'data/model/pop/playlist={n_playlist}'
+path_word_sim = f'data/model/word_sim/playlist={n_playlist}'
+path_vector = f'data/model/vector/embed={size_embed}-playlist={n_playlist}-rate={learn_rate}'
+path_fcm = f'data/model/fcm/embed={size_embed}-playlist={n_playlist}'
 
 # Prepare characters mapping
 characters_mapping = {}
-with open(path_root + '/data/data-all/characters-mapping.csv') as csv_file:
-    csv_reader = csv.DictReader(csv_file, delimiter=',')
+with open('data/data-all/characters-mapping.csv') as csv_file:
+    csv_reader = csv.DictReader(csv_file)
     for row in csv_reader:
         characters_mapping[row['char']] = row['map']
 
@@ -34,16 +41,16 @@ for i in range(n_mpd_file):
     mpd_file_names.append(f'mpd.slice.{start}-{end}.json')
 
 # Read all mpd files -> create playlists.csv
-mpd_path = path_root + '/data/mpd/spotify_million_playlist_dataset/data/'
-path_relative = '/data/data-all/playlists.csv'
-
+print(PROCESS_FORMAT, f'Selection of {n_playlist} playlists')
+mpd_path = 'data/mpd/spotify_million_playlist_dataset/data/'
+path_csv = 'data/data-all/playlists.csv'
 tracks = {}
-with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
     n_done = 0
     n_total = n_playlist
     t_start = time.perf_counter()
-    print(EXPORT_FORMAT, path_relative)
+    print(EXPORT_FORMAT, path_csv)
     writer = csv.writer(f)
     # write header
     header = ['playlist_id','title','track_ids']
@@ -88,7 +95,7 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
                 t_remaining = (n_total-n_done)/n_done * t_elapsed
                 print(f'\r🟡 Done: {n_done}/{n_total} '
                     + f'Elapsed: {t_elapsed:.3f}s '
-                    + f'Est.: {t_remaining:.3f}s', end = ' ')
+                    + f'ETA: {t_remaining:.3f}s', end = ' ')
         # break condition
         if (n_done == n_total): break
     print(f'\r✅ Done: {n_done}/{n_total} - '
@@ -96,10 +103,10 @@ with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
         + ' '*20)
 
 # Writing tracks.csv sort by id
-path_relative = '/data/data-all/tracks.csv'
-with open(path_root + path_relative, 'w', encoding = 'UTF8', newline = '') as f:
+path_csv = 'data/data-all/tracks.csv'
+with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
     # starting
-    print(EXPORT_FORMAT, path_relative)
+    print(EXPORT_FORMAT, path_csv)
     writer = csv.writer(f)
     t_start = time.perf_counter()
     # write header

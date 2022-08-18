@@ -1,0 +1,11 @@
+{
+    "_comment": "n_vocab, n_data_train will be updated along the learning process",
+    "n_playlist": 1000,
+    "n_vocab": 33832,
+    "n_data_train": 62132,
+    "n_data_batch": 100000,
+    "size_embed": 20,
+    "learn_rate": 0.001,
+    "n_epoch": 50,
+    "div_cluster": 500
+}

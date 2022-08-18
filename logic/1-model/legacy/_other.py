@@ -1,4 +1,4 @@
-# p6_model_train_cbf_cbow
+# p6_model_train_cbf_w2v
 # # Get binary encoding
     # digit = math.ceil(math.log(len(label_encoding), 2))
     # encoding = [0] * digit
