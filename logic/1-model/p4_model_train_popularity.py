@@ -69,9 +69,9 @@ with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
 
 # Finishing
 track_count = len(track_count_list)
-print('     - Tracks count :', track_count)
-print('     - Max count    :', track_count_list[0][1])
-print('     - Min count    :', track_count_list[-1][1])
+print('   - Tracks count :', track_count)
+print('   - Max count    :', track_count_list[0][1])
+print('   - Min count    :', track_count_list[-1][1])
 
 # update parameters values
 params['vars'][f'{n_playlist}']['n_vocab'] = track_count

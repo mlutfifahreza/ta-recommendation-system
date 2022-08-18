@@ -16,6 +16,7 @@ n_data_batch = params['n_data_batch']
 size_embed = params['size_embed']
 learn_rate = params['learn_rate']
 n_epoch = params['n_epoch']
+div_cluster = params['div_cluster']
 
 # Paths
 path_pop = f'data/model/pop/playlist={n_playlist}'
@@ -51,7 +52,7 @@ def get_centroids(weights, inputs, p = 1.75):
       n_done = (k * n_dimension) + d + 1
       t_elapsed = time.perf_counter()-t_start
       t_remaining = (n_total-n_done) / n_done * t_elapsed
-      print(f'🟡 Done: {n_done}/{n_total} '
+      print(f'🟡 Progress: {n_done}/{n_total} '
         + f'Elapsed: {t_elapsed:.3f}s '
         + f'ETA: {t_remaining:.3f}s', end = '\r')
   print()
@@ -83,7 +84,7 @@ def update_weights(weights, inputs, centroids, p = 1.75):
       n_done = k * n_data + i + 1
       t_elapsed = time.perf_counter()-t_start
       t_remaining = (n_total-n_done) / n_done * t_elapsed
-      print(f'🟡 Done: {n_done}/{n_total} '
+      print(f'🟡 Progress: {n_done}/{n_total} '
         + f'Elapsed: {t_elapsed:.3f}s '
         + f'ETA: {t_remaining:.3f}s', end = '\r')
   print()
@@ -108,7 +109,7 @@ def SSE(weights, inputs, centroids, p = 1.75):
 # FCM: init inputs
 # Getting embedding as inputs
 inputs = []
-path_csv =  path_vector + '/embeddings.csv'
+path_csv =  path_vector + '/key-vector.csv'
 with open(path_csv) as csv_file:
   # starting
   print(READING_FORMAT, path_csv)
@@ -135,10 +136,10 @@ centroids = None
 
 # FCM: learn
 print(PROCESS_FORMAT, 'FCM Learning')
-print('      - data shape    =', inputs.shape)
-print('      - fuzzy param   =', fuzzy_param)
-print('      - threshold     =', threshold)
-print('      - n clusters    =', n_clusters)
+print('    - data shape    =', inputs.shape)
+print('    - fuzzy param   =', fuzzy_param)
+print('    - threshold     =', threshold)
+print('    - n clusters    =', n_clusters)
 log_sse = []
 last_sse = float('inf')
 for i in range(max_iter):

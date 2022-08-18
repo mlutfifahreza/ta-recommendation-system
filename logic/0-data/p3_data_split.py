@@ -66,7 +66,7 @@ with open(path_csv) as csv_file:
       n_done += 1
       t_elapsed = time.perf_counter()-t_start
       t_remaining = (n_total-n_done)/n_done * t_elapsed
-      print(f'\r🟡 Done: {n_done}/{n_total} '
+      print(f'\r🟡 Progress: {n_done}/{n_total} '
         + f'Elapsed: {t_elapsed:.3f}s '
         + f'ETA: {t_remaining:.3f}s', end = ' ')
   # Finishing
@@ -75,6 +75,6 @@ with open(path_csv) as csv_file:
     + ' '*20)
 
 # Finishing
-print('     - All Playlist :', n_done)
-print('     - Training     :', n_train)
-print('     - Testing      :', n_test)
+print('   - All Playlist :', n_done)
+print('   - Training     :', n_train)
+print('   - Testing      :', n_test)
