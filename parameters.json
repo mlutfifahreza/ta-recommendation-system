@@ -1,8 +1,17 @@
 {
-  "_comment": "n_vocab, n_data_train will be updated along the learning process",
   "n_playlist": 1000,
-  "n_vocab": 33832,
-  "n_data_train": 62132,
+  "vars": {
+    "100": { "n_vocab": 0, "n_data_train": 0 },
+    "500": { "n_vocab": 0, "n_data_train": 0 },
+    "1000": { "n_vocab": 33832, "n_data_train": 900 },
+    "2500": { "n_vocab": 0, "n_data_train": 0 },
+    "5000": { "n_vocab": 0, "n_data_train": 0 },
+    "10000": { "n_vocab": 0, "n_data_train": 0 },
+    "20000": { "n_vocab": 0, "n_data_train": 0 },
+    "50000": { "n_vocab": 0, "n_data_train": 0 },
+    "100000": { "n_vocab": 0, "n_data_train": 0 },
+    "200000": { "n_vocab": 0, "n_data_train": 0 }
+  },
   "n_data_batch": 100000,
   "size_embed": 20,
   "learn_rate": 0.001,

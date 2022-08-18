@@ -8,8 +8,8 @@ PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
 # Parameters
 params = json.load(open('parameters.json'))
 n_playlist = params['n_playlist']
-n_vocab = params['n_vocab']
-n_data_train = params['n_data_train']
+n_vocab = params['vars'][f'{n_playlist}']['n_vocab']
+n_data_train = params['vars'][f'{n_playlist}']['n_data_train']
 n_data_batch = params['n_data_batch']
 size_embed = params['size_embed']
 learn_rate = params['learn_rate']
@@ -69,10 +69,10 @@ with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
 
 # Finishing
 track_count = len(track_count_list)
-print('   - Tracks count :', track_count)
-print('   - Max count  :', track_count_list[0][1])
-print('   - Min count  :', track_count_list[-1][1])
+print('     - Tracks count :', track_count)
+print('     - Max count    :', track_count_list[0][1])
+print('     - Min count    :', track_count_list[-1][1])
 
 # update parameters values
-params['n_vocab'] = track_count
+params['vars'][f'{n_playlist}']['n_vocab'] = track_count
 json.dump(params, open('parameters.json', 'w'), indent=2)

@@ -17,8 +17,8 @@ PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
 # Parameters
 params = json.load(open('parameters.json'))
 n_playlist = params['n_playlist']
-n_vocab = params['n_vocab']
-n_data_train = params['n_data_train']
+n_vocab = params['vars'][f'{n_playlist}']['n_vocab']
+n_data_train = params['vars'][f'{n_playlist}']['n_data_train']
 n_data_batch = params['n_data_batch']
 size_embed = params['size_embed']
 learn_rate = params['learn_rate']
@@ -144,13 +144,13 @@ learn_log = {
 }
 # init print
 print(PROCESS_FORMAT, "CBOW is now learning")
-print('   - Learning rate  =', learn_rate)
-print('   - Max epoch    =', n_epoch)
-print('   - Patience     =', early_stop_patience)
-print('   - Min delta    =', early_stop_min_delta)
-print('   - Total data   =', n_data_train)
-print('   - Num of batch   =', n_batch)
-print('   - Data per batch =', n_data_batch)
+print('     - Learning rate  =', learn_rate)
+print('     - Max epoch      =', n_epoch)
+print('     - Patience       =', early_stop_patience)
+print('     - Min delta      =', early_stop_min_delta)
+print('     - Total data     =', n_data_train)
+print('     - Num of batch   =', n_batch)
+print('     - Data per batch =', n_data_batch)
 # start
 for i in range(n_batch):
   # get data train
@@ -232,7 +232,7 @@ for i in range(n_batch):
   
 # save logs
 path_save = path_vector + f'/learn_log.json'
-json.dump(learn_log, open(path_save, 'w'), indent=4)
+json.dump(learn_log, open(path_save, 'w'), indent=2)
 
 # Extract embeddings
 embeddings = model_embedding.get_layer('output').get_weights()[0]
