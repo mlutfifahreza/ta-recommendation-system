@@ -19,12 +19,11 @@ n_epoch = params['n_epoch']
 path_pop = f'data/model/pop/playlist={n_playlist}'
 path_word_sim = f'data/model/word_sim/playlist={n_playlist}'
 path_vector = f'data/model/vector/embed={size_embed}-playlist={n_playlist}-rate={learn_rate}'
-path_w2v = f'data/model/w2v/embed:{size_embed}-playlist={n_playlist}-rate:{learn_rate}'
-path_fcm = f'data/model/cbow/embed:{size_embed}-playlist={n_playlist}'
+path_fcm = f'data/model/fcm/embed={size_embed}-playlist={n_playlist}'
 
 # Creating saving directory path
-if not os.path.exists(path_w2v):
-  os.makedirs(path_w2v)
+if not os.path.exists(path_vector):
+  os.makedirs(path_vector)
 
 # Getting vocabularies: labels & neighbors
 vocabs_index = {} # key is track_id, value is index
@@ -44,7 +43,8 @@ n_vocab = len(vocabs_index)
 print('n_vocab =', n_vocab)
 
 # Get one hot encoding index + export
-path_csv = path_w2v + '/track-one_hot_index.csv'
+print(PROCESS_FORMAT, 'Get one hot encoding index')
+path_csv = path_vector + '/track-one_hot_index.csv'
 with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
   # init
   print(EXPORT_FORMAT, path_csv)
@@ -83,8 +83,8 @@ def add_new_data(path_csv, new_input, new_target):
     csv.writer(f).writerow([new_input, new_target])
 
 # (new) set 2 closest as neighbors
-print(PROCESS_FORMAT, 'Generating Word2Vec data train')
-# k = 1
+print(PROCESS_FORMAT, 'Generating CBOW data train')
+k = 1
 path_csv = 'data/data-training/playlists.csv'
 with open(path_csv) as csv_file:
   # init
@@ -95,7 +95,7 @@ with open(path_csv) as csv_file:
   t_start = time.perf_counter()
   t_elapsed = 0
   # init export file
-  path_csv_export = path_w2v + '/train=input-target.csv'
+  path_csv_export = path_vector + '/train=input-target.csv'
   create_data_train_file(path_csv_export)
   # read and process
   csv_reader = csv.DictReader(csv_file)
@@ -103,14 +103,22 @@ with open(path_csv) as csv_file:
     track_ids = row['track_ids'].split()
     n_track = len(track_ids)
     for i in range(n_track):
-      for a,b in [[i-1, i+1], [i+1, i-1]]:
-        if (0 <= a < n_track) and (0 <= b < n_track):
-          # label -> target
-          new_target = f'{vocabs_index[track_ids[i]]}'
-          # label's neighbor -> inputs (one hot)
-          new_input = f'{vocabs_index[track_ids[a]]} {vocabs_index[track_ids[b]]}'
-          add_new_data(path_csv_export, new_input, new_target)
-          n_data_train += 1
+      # for j in range(i-k, i+k+1):
+      #   # label -> target
+      #   new_target = f'{vocabs_index[track_ids[i]]}'
+      #   if (0 <= j < n_track):
+      #     # label's neighbor -> inputs (one hot)
+      #     new_input = f'{vocabs_index[track_ids[j]]}'
+      #     add_new_data(path_csv_export, new_input, new_target)
+      #     n_data_train += 1
+      a,b = i-1, i+1
+      if (0 <= a < n_track) and (0 <= b < n_track):
+        # label -> target
+        new_target = f'{vocabs_index[track_ids[i]]}'
+        # label's neighbor -> inputs (one hot)
+        new_input = f'{vocabs_index[track_ids[a]]} {vocabs_index[track_ids[b]]}'
+        add_new_data(path_csv_export, new_input, new_target)
+        n_data_train += 1
     # Progress stats
     n_done += 1
     t_elapsed = time.perf_counter()-t_start
@@ -119,7 +127,7 @@ with open(path_csv) as csv_file:
       + f'Elapsed: {t_elapsed:.3f}s '
       + f'ETA: {t_remaining:.3f}s', end = ' ')
   # end
-  print(f'\r✅ Done: {n_done} data - '
+  print(f'\r✅ Done: 100% '
     + f'Elapsed: {t_elapsed:.3f}s'
     + ' '*20)
 
