@@ -1,6 +1,4 @@
-import time, csv, sys, json
-import numpy as np
-import matplotlib.pyplot as plt
+import os, json
 
 # String formatting
 READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
@@ -27,3 +25,21 @@ path_pop = f'data/model/pop/playlist={n_playlist}'
 path_word_sim = f'data/model/word_sim/playlist={n_playlist}'
 path_vector = f'data/model/vector/playlist={n_playlist}-embed={size_embed}'
 path_fcm = f'data/model/fcm/playlist={n_playlist}-embed={size_embed}'
+
+paths = [
+  path_general,
+  path_data,
+  path_data_train,
+  path_data_test,
+  path_pop,
+  path_word_sim,
+  path_vector,
+  path_fcm]
+
+for path in paths:
+  if not os.path.exists(path):
+    os.makedirs(path)
+
+# create params vars
+params['vars'][f'{n_playlist}'] = {}
+json.dump(params, open('parameters.json', 'w'), indent=2)

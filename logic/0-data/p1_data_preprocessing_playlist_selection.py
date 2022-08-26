@@ -6,26 +6,31 @@ import p2_text_preprocessing_title_cleaning as text_preprocess
 READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
 EXPORT_FORMAT = '\033[92m' + 'Export:' + '\033[0m'
 PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
+SUBPROCESS_FORMAT = '\033[94m' + 'Sub-Process:' + '\033[0m'
 
 # Parameters
 params = json.load(open('parameters.json'))
 n_playlist = params['n_playlist']
-n_vocab = params['vars'][f'{n_playlist}']['n_vocab']
-n_data_train = params['vars'][f'{n_playlist}']['n_data_train']
-n_data_batch = params['n_data_batch']
 size_embed = params['size_embed']
-learn_rate = params['learn_rate']
 n_epoch = params['n_epoch']
+div_cluster = params['div_cluster']
+iter_max = params['iter_max']
+change_threshold = params['change_threshold']
+fuzzy_param = params['fuzzy_param']
 
 # Paths
+path_general = f'data/general'
+path_data = f'data/data_all/playlist={n_playlist}'
+path_data_train = f'data/data_train/playlist={n_playlist}'
+path_data_test = f'data/data_test/playlist={n_playlist}'
 path_pop = f'data/model/pop/playlist={n_playlist}'
 path_word_sim = f'data/model/word_sim/playlist={n_playlist}'
-path_vector = f'data/model/vector/embed={size_embed}-playlist={n_playlist}-rate={learn_rate}'
-path_fcm = f'data/model/fcm/embed={size_embed}-playlist={n_playlist}'
+path_vector = f'data/model/vector/playlist={n_playlist}-embed={size_embed}'
+path_fcm = f'data/model/fcm/playlist={n_playlist}-embed={size_embed}'
 
 # Prepare characters mapping
 characters_mapping = {}
-with open('data/data-all/characters-mapping.csv') as csv_file:
+with open(path_general + '/characters-mapping.csv') as csv_file:
   csv_reader = csv.DictReader(csv_file)
   for row in csv_reader:
     characters_mapping[row['char']] = row['map']
@@ -43,7 +48,7 @@ for i in range(n_mpd_file):
 # Read all mpd files -> create playlists.csv
 print(PROCESS_FORMAT, f'Selection of {n_playlist} playlists')
 mpd_path = 'data/mpd/spotify_million_playlist_dataset/data/'
-path_csv = 'data/data-all/playlists.csv'
+path_csv = path_data + '/playlists_all.csv'
 tracks = {}
 with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
   # starting
@@ -103,7 +108,7 @@ with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
     + ' '*20)
 
 # Writing tracks.csv sort by id
-path_csv = 'data/data-all/tracks.csv'
+path_csv = path_data + '/tracks_all.csv'
 with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
   # starting
   print(EXPORT_FORMAT, path_csv)
