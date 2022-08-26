@@ -1,6 +1,5 @@
 # Big files
 data/mpd/spotify_million_playlist_dataset/
-*.csv
 !characters-mapping.csv
 
 # MacOS
@@ -140,3 +139,13 @@ dmypy.json
 .pyre/
 
 logic/1-model/test2.py
+
+data/data_all/
+
+data/data_test/
+
+data/data_train/
+
+data/data-testing/
+
+data/data-training/
