@@ -6,7 +6,9 @@ data/data_all/
 data/data_test/
 data/data_train/
 data/data_valid/
-data/mpd/spotify_million_playlist_dataset/
+data/mpd/
+
+# Except
 
 # MacOS
 .DS_Store
