@@ -1,7 +1,4 @@
-import time, csv, sys, json
-from turtle import right
-import numpy as np
-import matplotlib.pyplot as plt
+import csv, json
 
 # String formatting
 READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'

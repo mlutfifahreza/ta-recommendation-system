@@ -1,6 +1,4 @@
-import time, csv, sys, json
-import numpy as np
-import matplotlib.pyplot as plt
+import time, json
 from gensim.models import FastText
 
 # String formatting

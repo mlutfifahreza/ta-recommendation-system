@@ -1,10 +1,7 @@
-import os, csv, time, json
-import numpy as np
+import os, time, json
 import matplotlib.pyplot as plt
 from gensim.test.utils import datapath
-from gensim.test.utils import common_texts
 from gensim.models import FastText
-from gensim.test.utils import get_tmpfile
 
 # String formatting
 READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'

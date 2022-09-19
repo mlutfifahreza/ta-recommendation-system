@@ -1,4 +1,4 @@
-import os, csv, time, sys, json
+import csv, time, sys, json
 from nltk.corpus import wordnet
 csv.field_size_limit(sys.maxsize)
 

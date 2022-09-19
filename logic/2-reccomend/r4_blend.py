@@ -1,7 +1,4 @@
-import time, csv, sys, json
-import numpy as np
-import matplotlib.pyplot as plt
-from gensim.models import FastText
+import json
 
 # String formatting
 READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
@@ -16,10 +13,6 @@ path_data_test = f'data/data_test/playlist={n_playlist}'
 playlists_test_path = path_data_test + '/playlists_test.json'
 playlists_test = json.load(open(playlists_test_path))
 # # # # # # # # # # # # # # # # # # # # # #
-
-# load best vector model
-best_model_path = params['result'][str(n_playlist)]['best_model_path']
-model = FastText.load(best_model_path)
 
 # reccomend from n random data
 playlists_reccomend = {}

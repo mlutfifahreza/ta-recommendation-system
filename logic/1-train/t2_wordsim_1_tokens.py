@@ -1,4 +1,4 @@
-import os, csv, time, sys, json
+import csv, time, sys, json
 csv.field_size_limit(sys.maxsize)
 
 # String formatting

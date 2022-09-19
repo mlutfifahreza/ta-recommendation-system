@@ -1,5 +1,4 @@
-from email import header
-import time, csv, sys, json
+import csv, json
 from math import log2, floor
 
 # String formatting

@@ -1,4 +1,4 @@
-import os, csv, time, json
+import csv, json
 
 # String formatting
 READING_FORMAT = '\033[94m' + 'Reading:' + '\033[0m'
