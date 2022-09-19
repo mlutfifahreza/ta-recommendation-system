@@ -1,12 +1,13 @@
-# ta-recommendation-system
+# Thesis
 - Muhammad Lutfi Fahreza
 - 18/430269/PA/18782
 
-## MPD
-download datasets from here
-`https://www.aicrowd.com/challenges/spotify-million-playlist-dataset-challenge/dataset_files`
+# MPD
+1. Download datasets from here https://www.aicrowd.com/challenges/spotify-million-playlist-dataset-challenge/dataset_files
+2. Extract
+3. Put 'spotify_million_playlist_dataset' under 'data/mpd/'
 
-## How to run
+# How to run
 0. Make sure all dependencies installed
 1. Check parameters.json, update these fields (if necessary):
    - n_playlist : how many playlists to select from mpd
