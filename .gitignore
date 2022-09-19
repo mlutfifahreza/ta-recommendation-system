@@ -1,12 +1,25 @@
+# Test
+test*
+
 # Big files
+data/data_all/
+data/data_test/
+data/data_train/
+data/data_valid/
 data/mpd/spotify_million_playlist_dataset/
+*.csv
+
+# except
 !characters-mapping.csv
+!evaluation.csv
+
+
+
+
+# TEMPLATE
 
 # MacOS
 .DS_Store
-
-# Test
-test*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -138,14 +151,3 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-logic/1-model/test2.py
-
-data/data_all/
-
-data/data_test/
-
-data/data_train/
-
-data/data-testing/
-
-data/data-training/
