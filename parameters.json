@@ -27,6 +27,5 @@
       "accuracy_max": 0.7212086861029438,
       "best_model_path": "/Users/mlutfifahreza/Documents/S1 UGM/Tugas Akhir/3 Skripsi/ta-recommendation-system/data/model/vector/playlist=10000/fasttext_best.model"
     }
-  },
-  "accuracy_max": 0
+  }
 }
