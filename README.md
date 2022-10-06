@@ -20,9 +20,9 @@
 3. After updating the params, run the main.py
 
 # Dependencies used
-- Python v3.8.13
-- demoji v1.1.0
-- gensim v4.2.0
-- matplotlib v3.5.2
-- nltk v3.7
-- numpy v1.22.4
+- Python 3.8.13
+- demoji 1.1.0
+- gensim 4.2.0
+- matplotlib 3.5.2
+- nltk 3.7
+- numpy 1.22.4
