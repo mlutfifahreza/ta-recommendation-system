@@ -8,13 +8,21 @@
 3. Put 'spotify_million_playlist_dataset' under 'data/mpd/'
 
 # How to run
-0. Make sure all dependencies installed
-1. Check parameters.json, update these fields (if necessary):
+1. Make sure all dependencies installed
+2. Check params.json, update these fields (if necessary):
    - n_playlist : how many playlists to select from mpd
-   - embed_list : list of embed size to train
-   - window_size : window size for FastText train
+   - vector_list : list of vector size to train
+   - window_size : window size for Word2Vec train
    - epoch_min
    - epoch_max
    - epoch_patience : how many patience of negative progress of accuracy
    - n_list : list of starting number of tracks in playlist to reccomend
-2. After updating the params, run the main.py
+3. After updating the params, run the main.py
+
+# Dependencies used
+- Python v3.8.13
+- demoji v1.1.0
+- gensim v4.2.0
+- matplotlib v3.5.2
+- nltk v3.7
+- numpy v1.22.4

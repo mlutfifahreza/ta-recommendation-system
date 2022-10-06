@@ -1,0 +1,42 @@
+{
+  "n_playlist": 50000,
+  "_1": "word vector",
+  "vector_list": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40
+  ],
+  "vector_size": 40,
+  "window_size": 3,
+  "epoch_min": 5,
+  "epoch_max": 100,
+  "epoch_patience": 1,
+  "_2": "eval",
+  "n_list": [
+    1,
+    5
+  ],
+  "n_recc": 500,
+  "result": {
+    "2500": {
+      "n_track": 59904,
+      "n_token": 1081,
+      "best_model_path": "/Users/mlutfifahreza/Documents/S1 UGM/Tugas Akhir/3 Skripsi/ta-recommendation-system 1/data/model/track_sim/playlist=2500/Word2Vec_best.model"
+    },
+    "20000": {
+      "n_track": 252261,
+      "n_token": 3700,
+      "best_model_path": "/Users/mlutfifahreza/Documents/S1 UGM/Tugas Akhir/3 Skripsi/ta-recommendation-system 1/data/model/track_sim/playlist=20000/Word2Vec_best.model"
+    },
+    "50000": {
+      "n_track": 436254,
+      "n_token": 5511,
+      "best_model_path": "/Users/mlutfifahreza/Documents/S1 UGM/Tugas Akhir/3 Skripsi/ta-recommendation-system 1/data/model/track_sim/playlist=50000/Word2Vec_best.model"
+    }
+  }
+}

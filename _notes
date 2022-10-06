@@ -11,7 +11,7 @@ DBSCAN clustering algorithm
 - DBSCAN stands for density-based spatial clustering of applications with noise. It's a density-based clustering algorithm, unlike k-means.
 - goodfor finding outliners ✅
 - This algorithm is better than k-means when it comes to working with oddly shaped data.
-- two parameters to:
+- two params to:
   - minPts (the minimum number of data points)
   - eps (the distance in the same area).
 
@@ -31,7 +31,7 @@ BIRCH algorithm
 
 Affinity Propagation clustering algorithm
 - completely different from the others
-- Each data point communicates with all of the other data points to let each other know how similar they are and that starts to reveal the clusters in the data. You don't have to tell this algorithm how many clusters to expect in the initialization parameters. ✅
+- Each data point communicates with all of the other data points to let each other know how similar they are and that starts to reveal the clusters in the data. You don't have to tell this algorithm how many clusters to expect in the initialization params. ✅
 - As messages are sent between data points, sets of data called exemplars are found and they represent the clusters.
 - An exemplar is found after the data points have passed messages to each other and form a consensus on what data point best represents a cluster.
 - When you aren't sure how many clusters to expect, like in a computer vision problem, this is a great algorithm to start with.

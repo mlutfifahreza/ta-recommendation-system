@@ -8,12 +8,13 @@ PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
 SUBPROCESS_FORMAT = '\033[94m' + 'Sub-Process:' + '\033[0m'
 
 # General Variables
-params = json.load(open('parameters.json'))
+params = json.load(open('params.json'))
 n_playlist = params['n_playlist']
 path_data_all = f'data/data_all/playlist={n_playlist}'
 path_data_test = f'data/data_test/playlist={n_playlist}'
-path_vector = f'data/model/vector/playlist={n_playlist}'
+path_track_sim = f'data/model/track_sim/playlist={n_playlist}'
 path_fcm = f'data/model/fcm/playlist={n_playlist}'
+vector_size = params['vector_size']
 # # # # # # # # # # # # # # # # # # # # # #
 
 # prepare track detail
@@ -29,13 +30,9 @@ with open(path_csv) as csv_file:
     }
 
 # read test playlists
-playlists_test_path = path_data_test + '/playlists_test.json'
-path_playlists_reccomend_title = path_data_test + '/playlists_reccomend_title.json'
-path_playlists_reccomend_pop = path_data_test + '/playlists_reccomend_pop.json'
-playlists_test = json.load(open(playlists_test_path))
+playlists_test = json.load(open(path_data_test + '/playlists_test.json'))
 playlists_reccomend = {
-  'title' : json.load(open(path_playlists_reccomend_title)),
-  'pop' : json.load(open(path_playlists_reccomend_pop)),
+  'title' : json.load(open(path_data_test + '/playlists_reccomend_title.json')),
 }
 n_list = params['n_list']
 # track only
@@ -66,15 +63,9 @@ def ndcg(output_ids, target_ids):
       dcg += relevance / denum
       idcg += 1 / denum
     return dcg/idcg
-  else: return 0
+  else:
+    return 0
 
-def clicks(output_ids, target_ids):
-  result = floor(params['n_recc']/10) + 1
-  for i, value in enumerate(output_ids, start=1):
-    if value in target_ids:
-      result = floor((i-1)/10)
-      break
-  return result
 
 # START
 evaluation = {}
@@ -84,34 +75,24 @@ for type in playlists_reccomend:
     'overall' : {
       'r_prec' : [],
       'ndcg' : [],
-      'clicks' : [],
     }
   }
-  for pid, playlist_detail in playlists_reccomend[type].items():
+  for pid, tracks_value in playlists_reccomend[type].items():
     evaluation[type][pid] = {}
-    output_ids = [id for id in playlist_detail.keys()][:params['n_recc']]
-    if (len(output_ids) < 1):
-      evaluation[type][pid]['r_prec'] = None
-      evaluation[type][pid]['ndcg'] = None
-      evaluation[type][pid]['clicks'] = None
-      continue
+    output_ids = [id for id in tracks_value.keys()][:params['n_recc']]
     # eval
     target_ids = playlists_test[pid]['all']
     r_prec_val = r_prec(output_ids, target_ids)
     ndcg_val = ndcg(output_ids, target_ids)
-    clicks_val = clicks(output_ids, target_ids)
     # add
     evaluation[type][pid]['r_prec'] = r_prec_val
     evaluation[type][pid]['ndcg'] = ndcg_val
-    evaluation[type][pid]['clicks'] = clicks_val
     # add to overall temp
     evaluation[type]['overall']['r_prec'].append(r_prec_val)
     evaluation[type]['overall']['ndcg'].append(ndcg_val)
-    evaluation[type]['overall']['clicks'].append(clicks_val)
   # overall temp: eval list 
   r_prec_list = evaluation[type]['overall']['r_prec']
   ndcg_list = evaluation[type]['overall']['ndcg']
-  clicks_list = evaluation[type]['overall']['clicks']
   # update
   evaluation[type]['overall']['r_prec'] = {
     'min' : min(r_prec_list),
@@ -123,34 +104,27 @@ for type in playlists_reccomend:
     'max' : max(ndcg_list),
     'avg' : sum(ndcg_list) / len(ndcg_list)
   }
-  evaluation[type]['overall']['clicks'] = {
-    'min' : min(clicks_list),
-    'max' : max(clicks_list),
-    'avg' : sum(clicks_list) / len(clicks_list)
-  }
   print(type)
   new_eval_row = [type]
-  for measurement, val in evaluation[type]['overall'].items():
-    print(measurement, val)
-    new_eval_row.append(val['avg'])
+  for metric, value in evaluation[type]['overall'].items():
+    print(metric, value)
+    new_eval_row.append(value['avg'])
   evaluation_csv.append(new_eval_row)
   print()
 
-print(evaluation_csv[0])
 
 # save evaluation
-path_export = path_data_test + '/evaluation.json'
+path_export = path_data_test + f'/evaluation_{vector_size}.json'
 print(EXPORT_FORMAT, path_export)
 json.dump(evaluation, open(path_export, 'w'), indent=2)
 print(f'✅ Finished')
 
 # Writing tracks.csv sort by id
-path_csv = path_data_test + '/evaluation.csv'
-with open(path_csv, 'w', encoding = 'UTF8', newline = '') as f:
+path_csv = path_data_test + f'/evaluation.csv'
+with open(path_csv, 'a+', encoding = 'UTF8', newline = '') as f:
   print(EXPORT_FORMAT, path_csv)
   writer = csv.writer(f)
-  header = ['type', 'r_prec', 'ndcg', 'clicks']
-  writer.writerow(header)
+  writer.writerow([str(vector_size)])
   for val in evaluation_csv:
     writer.writerow(val)
   print(f'✅ Finished')

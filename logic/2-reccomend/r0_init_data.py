@@ -7,7 +7,7 @@ PROCESS_FORMAT = '\n\033[35m' + 'Process:' + '\033[0m'
 SUBPROCESS_FORMAT = '\033[94m' + 'Sub-Process:' + '\033[0m'
 
 # General Variables
-params = json.load(open('parameters.json'))
+params = json.load(open('params.json'))
 n_playlist = params['n_playlist']
 path_data_test = f'data/data_test/playlist={n_playlist}'
 # # # # # # # # # # # # # # # # # # # # # #
@@ -23,7 +23,7 @@ with open(path_csv) as csv_file:
   print(READING_FORMAT, path_csv)
   csv_reader = csv.DictReader(csv_file)
   for row in csv_reader:
-    playlist_id = row['playlist_id']
+    pid = row['pid']
     title = row['title']
     track_ids = row['track_ids'].split()
     new_playlist = {}
@@ -36,7 +36,7 @@ with open(path_csv) as csv_file:
     # full playlist
     new_playlist['all'] = track_ids
     # add to json dict
-    playlists_test[playlist_id] = new_playlist
+    playlists_test[pid] = new_playlist
   print(f'✅ Finished')
 
 # Save vector data validation
