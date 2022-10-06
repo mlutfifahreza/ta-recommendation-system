@@ -36,27 +36,20 @@ def csv_add_new_data(path_csv, new_corpus):
 print(PROCESS_FORMAT, 'Generating data train (Corpus)')
 path_csv = path_data_train + '/playlists_train.csv'
 with open(path_csv) as csv_file:
-  # init
   print(READING_FORMAT, path_csv)
-  n_done = 0 
-  n_total = int(n_playlist * 0.8)
-  t_start = time.perf_counter()
-  t_elapsed = 0
-  # init export file
+  n_done, n_total = 0, int(n_playlist * 0.8)
+  t_start, t_elapsed = time.perf_counter(), 0
   create_csv_file(path_corpus_train)
-  # read and process
   csv_reader = csv.DictReader(csv_file)
   for row in csv_reader:
     track_ids = row['track_ids']
     csv_add_new_data(path_corpus_train, track_ids)
-    # Progress stats
     n_done += 1
     t_elapsed = time.perf_counter()-t_start
     t_remaining = (n_total-n_done)/n_done * t_elapsed
     print(f'\r🟡 Progress: {(n_done*100/n_total):.3f}% '
       + f'Elapsed: {t_elapsed:.3f}s '
       + f'ETA: {t_remaining:.3f}s', end = ' ')
-  # end
   print(f'\r✅ Elapsed: {t_elapsed:.3f}s' + ' '*40)
 
 # (new) set 2 closest as neighbors -> TEST
@@ -64,15 +57,10 @@ track_neighbors = {}
 print(PROCESS_FORMAT, 'Generating data validation (Corpus)')
 path_csv = path_data_valid + '/playlists_valid.csv'
 with open(path_csv) as csv_file:
-  # init
   print(READING_FORMAT, path_csv)
-  n_done = 0 
-  n_total = int(n_playlist * 0.1)
-  t_start = time.perf_counter()
-  t_elapsed = 0
-  # init export file
+  n_done, n_total = 0, int(n_playlist * 0.1)
+  t_start, t_elapsed = time.perf_counter(), 0
   create_csv_file(path_corpus_valid)
-  # read and process
   csv_reader = csv.DictReader(csv_file)
   for row in csv_reader:
     track_ids = row['track_ids']
@@ -103,47 +91,41 @@ with open(path_csv) as csv_file:
 
 # generate [id1, id2, is_neighbor]
 print(PROCESS_FORMAT, 'Generating vector data validation')
-u_track_ids = list(track_neighbors.keys())
+unique_track_ids = list(track_neighbors.keys())
 data_valid = {
   'header' : ['id1', 'id2', 'is_neighbor'],
   'value' : []
 }
+
 # getting neighbors
 print(SUBPROCESS_FORMAT, 'Getting neighbors')
 for key, val in track_neighbors.items():
   for neighbor in val:
     if (random.random() < 0.2):
       data_valid['value'].append([key, neighbor, 1])
+
 # getting not neighbors
 print(SUBPROCESS_FORMAT, 'Getting not neighbors')
-n_u_track_ids = len(u_track_ids)
+n_unique_track_ids = len(unique_track_ids)
 n_positive = len(data_valid['value'])
-# progress init
-n_done = 0 
-n_total = n_positive
-t_start = time.perf_counter()
-t_elapsed = 0
-# init
+n_done, n_total = 0, n_positive
+t_start, t_elapsed = time.perf_counter(), 0
 i = 0
 while (i < n_positive):
-  a = 0
-  b = 0
+  a = b = 0
   while (a == b):
-    a = random.randint(0,n_u_track_ids-1)
-    b = random.randint(0,n_u_track_ids-1)
-  track_a = u_track_ids[a]
-  track_b = u_track_ids[b]
+    a = random.randint(0, n_unique_track_ids-1)
+    b = random.randint(0, n_unique_track_ids-1)
+  track_a, track_b = unique_track_ids[a], unique_track_ids[b]
   if track_b not in track_neighbors[track_a]:
     data_valid['value'].append([track_a, track_b, 0])
     i += 1
-    # Progress stats
     n_done += 1
     t_elapsed = time.perf_counter()-t_start
     t_remaining = (n_total-n_done)/n_done * t_elapsed
     print(f'\r🟡 Progress: {(n_done*100/n_total):.3f}% '
       + f'Elapsed: {t_elapsed:.3f}s '
       + f'ETA: {t_remaining:.3f}s', end = ' ')
-# end
 print(f'\r✅ Elapsed: {t_elapsed:.3f}s' + ' '*40)
 
 # Save vector data validation

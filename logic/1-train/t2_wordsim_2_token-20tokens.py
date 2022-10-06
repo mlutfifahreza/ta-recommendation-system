@@ -89,8 +89,9 @@ for token in similarities:
     else:
       break
   if len(new_top20) > 1:
-    new_top20[token] = 0.5
+    new_top20[token] = 0.5 # add its own token
     token_20tokens[token] = new_top20
+
 # Save JSON
 path_export = path_word_sim + '/token_20tokens.json'
 print(EXPORT_FORMAT, path_export)

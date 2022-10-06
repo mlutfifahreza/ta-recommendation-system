@@ -30,10 +30,8 @@ token_tracks = {} # key = token, value = list of [track_id, count]
 token_100tracks = {}
 path_csv = path_word_sim + '/token-tracks.csv'
 with open(path_csv) as csv_file:
-  # starting
   print(READING_FORMAT, path_csv)
   t_start = time.perf_counter()
-  # read and process
   csv_reader = csv.DictReader(csv_file)
   for row in csv_reader:
     token = row['token']

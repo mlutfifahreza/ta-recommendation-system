@@ -1,4 +1,4 @@
-import os, json, csv, time, sys
+import json, csv, time
 from operator import itemgetter
 import d2_text_preprocess as text_preprocess
 

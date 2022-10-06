@@ -52,9 +52,8 @@ for curr_size_embed in embed_list:
   t_start = time.perf_counter()
   patience_left = epoch_patience
   accuracy_max_local = 0
-
-  # FastText - training
   for curr_epoch in epoch_range:
+    # FastText - training
     print(SUBPROCESS_FORMAT, f'Learning -- Epoch = {curr_epoch}/{epoch_max}', end=' -- ')
     t_epoch_start = time.perf_counter()
     model.train(corpus_file=corpus_file, total_words=total_words, epochs=1)
@@ -65,7 +64,7 @@ for curr_size_embed in embed_list:
     # FastText - validate
     TP = FP = TN = FN = 0
     for data in data_valid['value']:
-      id1, id2, target = data
+      [id1, id2, target] = data
       output = model.wv.similarity(id1, id2)
       # negative output
       if output < 0.5:
@@ -75,17 +74,17 @@ for curr_size_embed in embed_list:
       else:
         if target == 1: TP += 1
         else: FP += 1
-    
-    # FastText - training check
     total_data = (TP+FP+TN+FN)
     accuracy = (TN+TP)/total_data
     train_stat[curr_size_embed]['accuracy'].append(accuracy)
     print(f'Accuracy = {accuracy:.3f}', end=' ')
+    
     # check best model local
     if accuracy > accuracy_max_local:
       accuracy_max_local = accuracy
       patience_left = epoch_patience
       print(f'✅ Local best -> Patience = {patience_left}', end=' ')
+    
     # check best model global
     if accuracy > accuracy_max:
       params['result'][f'{n_playlist}']['best_epoch'] = curr_epoch
@@ -95,6 +94,7 @@ for curr_size_embed in embed_list:
       # saving model
       model.save(best_model_path)
     print()
+    
     # early stop
     if curr_epoch > epoch_min:
       curr_F = train_stat[curr_size_embed]['accuracy'][-1]
