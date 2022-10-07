@@ -18,12 +18,11 @@ paths_1 = [
 paths_2 = [
   'logic/1-train/t3_vector_2_train.py',
   'logic/2-reccomend/r0_init_data.py',
-  'logic/2-reccomend/r1_pop.py',
-  'logic/2-reccomend/r2_title.py',
-  'logic/2-reccomend/r3_vector.py',
-  'logic/2-reccomend/r4_blend.py',
-  'logic/2-reccomend/r5_pop_fillup.py', 
-  'logic/2-reccomend/r6_eval.py', 
+  'logic/2-reccomend/r1_title.py',
+  'logic/2-reccomend/r2_track.py',
+  'logic/2-reccomend/r3_blend.py',
+  'logic/2-reccomend/r4_pop_fillup.py',
+  'logic/2-reccomend/r5_eval.py',
 ]
 
 ALL_t_start = time.perf_counter()
